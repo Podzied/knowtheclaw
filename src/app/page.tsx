@@ -15,13 +15,13 @@ export default function Home() {
         <div className="hero-tag fi">
           <span style={{ fontSize: "1rem" }}>&#x1F99E;</span> Open-Source AI Agent
         </div>
-        <h1 className="fi fi2">Your computer, doing things for you.</h1>
+        <h1 className="fi fi2">AI that acts, not just chats.</h1>
         <p className="hero-sub fi fi3">
-          OpenClaw is an AI agent that runs locally and takes action — email, code, research, scheduling — through apps you already use.
+          OpenClaw runs on your machine, works through the apps you already use, and handles real work — inbox, scheduling, research, code, and automation. KnowTheClaw explains what it is, how it works, and why it matters.
         </p>
         <div className="cta-row fi fi4">
-          <a href="#demo" className="btn-primary">Try It</a>
-          <a href="#what" className="btn-secondary">Learn More</a>
+          <a href="#demo-1" className="btn-primary">See it work</a>
+          <a href="/overview" className="btn-secondary">Read the Overview</a>
         </div>
       </div>
 
@@ -37,7 +37,108 @@ export default function Home() {
             From answers to actions.
           </h2>
           <p style={{ fontSize: "1rem", lineHeight: 1.78, color: "var(--text-mid)" }}>
-            AI used to mean chat. Now it means delegation. Agents handle your email, write your code, and run tasks on a schedule. OpenClaw is the open-source version of that.
+            For the past few years, AI mostly meant chat: ask a question, get an answer, move on. Now the interface is changing. Agents handle your email, write your code, and run tasks on a schedule. OpenClaw is the open-source version of that.
+          </p>
+          <p style={{ fontSize: "1rem", lineHeight: 1.78, color: "var(--text-mid)", marginTop: "1rem", fontWeight: 500 }}>
+            The important shift is not better conversation. It&apos;s delegated execution.
+          </p>
+        </div>
+      </div>
+
+      {/* ── DEMO TRILOGY ── */}
+      <div id="demos">
+        {/* Demo 1 */}
+        <div className="demo-section" id="demo-1">
+          <div className="demo-section-inner">
+            <div className="demo-section-tag">Demo 1</div>
+            <h2 className="demo-section-h2">Deep Research Brief</h2>
+            <p className="demo-section-sub">
+              Give OpenClaw a topic. It searches the web, reads sources, cross-references, and delivers a structured research brief — with citations.
+            </p>
+            <div className="video-box">
+              <div className="video-placeholder">
+                <div className="video-coming-label">Coming Soon</div>
+                <div className="video-sub">Deep Research Brief — Full Walkthrough</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Explainer Interstitial */}
+        <div className="interstitial">
+          <div className="interstitial-inner">
+            <p>
+              That&apos;s not a search engine result. It&apos;s an agent that read dozens of pages, identified what matters, and assembled a brief you can act on. Here&apos;s what else it can do.
+            </p>
+          </div>
+        </div>
+
+        {/* Demo 2 */}
+        <div className="demo-section" id="demo-2">
+          <div className="demo-section-inner">
+            <div className="demo-section-tag">Demo 2</div>
+            <h2 className="demo-section-h2">What Changed This Week</h2>
+            <p className="demo-section-sub">
+              OpenClaw monitors repos, docs, and news — then summarizes what actually changed. No feeds. No dashboards. Just a plain-language update.
+            </p>
+            <div className="video-box">
+              <div className="video-placeholder">
+                <div className="video-coming-label">Coming Soon</div>
+                <div className="video-sub">What Changed This Week — Full Walkthrough</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Demo 3 */}
+        <div className="demo-section" id="demo-3">
+          <div className="demo-section-inner">
+            <div className="demo-section-tag">Demo 3</div>
+            <h2 className="demo-section-h2">URL &rarr; Analyst Readout</h2>
+            <p className="demo-section-sub">
+              Paste a URL. OpenClaw reads it, extracts the key claims, checks them against other sources, and returns a structured analyst readout.
+            </p>
+            <div className="video-box">
+              <div className="video-placeholder">
+                <div className="video-coming-label">Coming Soon</div>
+                <div className="video-sub">URL → Analyst Readout — Full Walkthrough</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── GUIDED LIVE WIDGET ── */}
+      <div className="demo-wrap" id="try-it">
+        <div className="demo-inner">
+          <div className="demo-tag">Try It</div>
+          <h2 className="demo-h2">Talk to a real claw.</h2>
+          <p className="demo-sub">
+            Live OpenClaw instance. Pick a prompt or type your own. Sandboxed — no data stored.
+          </p>
+          <div className="prompt-cards">
+            <button className="prompt-card" data-prompt="research">
+              <div className="prompt-card-icon">&#x1F50D;</div>
+              <h3>Research</h3>
+              <p>Deep-dive a topic with web search and source synthesis.</p>
+            </button>
+            <button className="prompt-card" data-prompt="monitoring">
+              <div className="prompt-card-icon">&#x1F4E1;</div>
+              <h3>Monitoring</h3>
+              <p>What changed this week in a repo, API, or news topic.</p>
+            </button>
+            <button className="prompt-card" data-prompt="evaluation">
+              <div className="prompt-card-icon">&#x1F4CB;</div>
+              <h3>Evaluation</h3>
+              <p>Paste a URL and get a structured analyst readout.</p>
+            </button>
+          </div>
+          <DemoChat />
+          <p className="demo-below">
+            This demo is limited. A full setup adds shell, email, calendar, smart home, and thousands more skills.
+          </p>
+          <p className="demo-disclaimer">
+            No data stored. Rate limited. Claude Sonnet.
           </p>
         </div>
       </div>
@@ -47,7 +148,7 @@ export default function Home() {
         <div className="section-tag">What It Does</div>
         <h2>Runs on your machine. Works through your apps.</h2>
         <p>
-          Laptop, Mac Mini, Pi, or server. You message it on WhatsApp, Slack, or Telegram. It picks the model, remembers context, and does the work.
+          Laptop, Mac Mini, Pi, or server. You message it on WhatsApp, Slack, or Telegram. It connects to the model you choose, keeps memory locally, and can execute tasks directly.
         </p>
         <div className="capabilities">
           <div className="cap-cell">
@@ -74,9 +175,9 @@ export default function Home() {
       {/* ── HOW IT WORKS ── */}
       <div className="section" id="how">
         <div className="section-tag">Architecture</div>
-        <h2>One process. Channels in, actions out.</h2>
+        <h2>One local gateway connects your channels, models, and tools.</h2>
         <p>
-          The Gateway connects your messaging apps to the model and tools. Memory stays local. Skills are modular.
+          The Gateway is the infrastructure. The product is the assistant it creates.
         </p>
 
         <div className="arch-box">
@@ -87,7 +188,7 @@ export default function Home() {
             </div>
             <div className="arch-arrow">&#8597;</div>
             <div className="arch-layer layer-gateway">
-              Gateway — sessions &middot; memory &middot; skills
+              Gateway — sessions &middot; memory &middot; skills &middot; heartbeat
             </div>
             <div className="arch-arrow">&#8597;</div>
             <div className="arch-layer layer-models">
@@ -106,44 +207,13 @@ export default function Home() {
         <div className="nemo-callout" style={{ marginTop: "1.5rem" }}>
           <h3>NemoClaw</h3>
           <p>
-            NVIDIA&apos;s hardened version. Sandboxed execution, local Nemotron models, policy guardrails. Early preview.
+            NemoClaw is NVIDIA&apos;s hardened distribution of OpenClaw, built for enterprise and edge deployment. It runs entirely on local Nemotron models, adds sandboxed execution environments, and enforces policy guardrails that limit what the agent can access and do. For teams that need auditability, isolation, and control — without giving up the flexibility of an open-source agent — NemoClaw is the clearest path. It&apos;s currently in early preview.
           </p>
         </div>
       </div>
 
       <div className="divider"><hr /></div>
 
-      {/* ── VIDEO ── */}
-      <div className="section" id="watch">
-        <div className="section-tag">Watch</div>
-        <h2>Start here.</h2>
-        <div className="video-box">
-          <div className="video-placeholder">
-            <div className="video-coming-label">Coming Soon</div>
-            <div className="video-sub">Claws Out — Ep. 1</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="divider"><hr /></div>
-
-      {/* ── LIVE DEMO ── */}
-      <div className="demo-wrap" id="demo">
-        <div className="demo-inner">
-          <div className="demo-tag">Live Demo</div>
-          <h2 className="demo-h2">Talk to a real claw.</h2>
-          <p className="demo-sub">
-            Live OpenClaw instance. Web search, summarization, OpenClaw Q&amp;A. Sandboxed.
-          </p>
-          <DemoChat />
-          <p className="demo-below">
-            This demo is limited. A full setup adds shell, email, calendar, smart home, and thousands more skills.
-          </p>
-          <p className="demo-disclaimer">
-            No data stored. Rate limited. Claude Sonnet.
-          </p>
-        </div>
-      </div>
 
       {/* ── SKILLS ── */}
       <div className="skills-wrap" id="skills">
@@ -225,19 +295,19 @@ export default function Home() {
       <div className="paths-wrap" id="paths">
         <div className="paths-inner">
           <div className="paths-grid">
-            <a href="/overview" className="path-card">
-              <h3>Understand</h3>
-              <p>How it all fits together.</p>
-              <div className="arrow">Overview &rarr;</div>
+            <a href="#demos" className="path-card">
+              <h3>Watch the Demos</h3>
+              <p>Three walkthroughs showing what OpenClaw actually does.</p>
+              <div className="arrow">Demos &rarr;</div>
             </a>
-            <a href="#watch" className="path-card">
-              <h3>Watch</h3>
-              <p>Video explainers.</p>
-              <div className="arrow">Videos &rarr;</div>
+            <a href="#try-it" className="path-card">
+              <h3>Try It Yourself</h3>
+              <p>Talk to a live instance with pre-seeded prompts.</p>
+              <div className="arrow">Live Widget &rarr;</div>
             </a>
             <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer" className="path-card">
-              <h3>Source</h3>
-              <p>The repo.</p>
+              <h3>Go to the Source</h3>
+              <p>The repo, the docs, and everything behind it.</p>
               <div className="arrow">GitHub &rarr;</div>
             </a>
           </div>
@@ -249,7 +319,10 @@ export default function Home() {
         <div className="section-tag">About</div>
         <h2>Independent. Not official.</h2>
         <p>
-          Made by practitioners. Not affiliated with the OpenClaw project. We just think this stuff matters and nobody&apos;s explaining it well yet.
+          KnowTheClaw is an independent educational resource created by practitioners working in and around the AI agent ecosystem. It is not the official OpenClaw project site and is not affiliated with or endorsed by the OpenClaw maintainers.
+        </p>
+        <p>
+          We built this because the technology is moving fast, the documentation is fragmented, and most coverage focuses on hype rather than how things actually work. This site exists to close that gap — with clear explanations, real demos, and honest takes on what&apos;s ready and what isn&apos;t.
         </p>
       </div>
 
@@ -273,6 +346,8 @@ export default function Home() {
                 <li><a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer">GitHub</a></li>
                 <li><a href="https://openclaw.ai" target="_blank" rel="noopener noreferrer">openclaw.ai</a></li>
                 <li><a href="https://docs.openclaw.ai" target="_blank" rel="noopener noreferrer">Docs</a></li>
+                <li><a href="https://build.nvidia.com/nvidia/nemoclaw" target="_blank" rel="noopener noreferrer">NemoClaw by NVIDIA</a></li>
+                <li><a href="https://github.com/NVIDIA/NemoClaw" target="_blank" rel="noopener noreferrer">NemoClaw on GitHub</a></li>
               </ul>
             </div>
           </div>

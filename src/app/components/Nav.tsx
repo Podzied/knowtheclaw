@@ -3,9 +3,9 @@
 import { useState } from 'react';
 
 const navLinks = [
-  { href: '#shift', label: 'What Changed' },
+  { href: '#demos', label: 'Demos' },
+  { href: '#try-it', label: 'Try It' },
   { href: '#what', label: 'What It Does' },
-  { href: '#demo', label: 'Live Demo' },
   { href: '#skills', label: 'Skills' },
   { href: '#setup', label: 'Setup' },
   { href: '#security', label: 'Security' },
