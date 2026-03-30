@@ -15,33 +15,29 @@ export default function Home() {
         <div className="hero-tag fi">
           <span style={{ fontSize: "1rem" }}>&#x1F99E;</span> Open-Source AI Agent
         </div>
-        <h1 className="fi fi2">AI that acts, not just chats.</h1>
+        <h1 className="fi fi2">Your computer, doing things for you.</h1>
         <p className="hero-sub fi fi3">
-          OpenClaw runs on your machine and handles real work — email, code, research, scheduling — through the apps you already use.
+          OpenClaw is an AI agent that runs locally and takes action — email, code, research, scheduling — through apps you already use.
         </p>
         <div className="cta-row fi fi4">
-          <a href="#demo" className="btn-primary">
-            Try the Live Demo
-          </a>
-          <a href="#what" className="btn-secondary">
-            How It Works
-          </a>
+          <a href="#demo" className="btn-primary">Try It</a>
+          <a href="#what" className="btn-secondary">Learn More</a>
         </div>
       </div>
 
       {/* ── THE SHIFT ── */}
       <div className="shift-wrap" id="shift">
         <div className="shift-inner">
-          <div className="section-tag">What Changed</div>
+          <div className="section-tag">The Shift</div>
           <h2 style={{
             fontFamily: "var(--font-serif), Georgia, serif",
             fontSize: "1.5rem", fontWeight: 400, fontStyle: "italic",
             lineHeight: 1.3, marginBottom: "1.1rem",
           }}>
-            AI moved from answers to actions.
+            From answers to actions.
           </h2>
           <p style={{ fontSize: "1rem", lineHeight: 1.78, color: "var(--text-mid)" }}>
-            Agents don&apos;t just answer questions — they triage email, schedule meetings, write code, and run recurring tasks. The shift isn&apos;t better conversation. It&apos;s delegated execution. OpenClaw is one of the clearest open-source examples.
+            AI used to mean chat. Now it means delegation. Agents handle your email, write your code, and run tasks on a schedule. OpenClaw is the open-source version of that.
           </p>
         </div>
       </div>
@@ -49,26 +45,26 @@ export default function Home() {
       {/* ── WHAT IT DOES ── */}
       <div className="section" id="what">
         <div className="section-tag">What It Does</div>
-        <h2>A local AI agent that works through your existing tools.</h2>
+        <h2>Runs on your machine. Works through your apps.</h2>
         <p>
-          OpenClaw runs on your machine — laptop, Mac Mini, Pi, or DGX Spark. You talk to it through WhatsApp, Slack, Telegram, or Discord. It connects to the model you choose, keeps memory locally, and executes tasks directly.
+          Laptop, Mac Mini, Pi, or server. You message it on WhatsApp, Slack, or Telegram. It picks the model, remembers context, and does the work.
         </p>
         <div className="capabilities">
           <div className="cap-cell">
-            <h3>Inbox &amp; Calendar</h3>
-            <p>Triage email, draft replies, schedule meetings, send reminders.</p>
+            <h3>Email &amp; Calendar</h3>
+            <p>Triage, draft, schedule, remind.</p>
           </div>
           <div className="cap-cell">
-            <h3>Code &amp; Systems</h3>
-            <p>Run commands, inspect repos, debug issues, automate dev work.</p>
+            <h3>Code &amp; DevOps</h3>
+            <p>Shell, repos, CI, debugging.</p>
           </div>
           <div className="cap-cell">
-            <h3>Research &amp; Files</h3>
-            <p>Search the web, read local files, produce summaries and reports.</p>
+            <h3>Research</h3>
+            <p>Web search, file reading, summaries.</p>
           </div>
           <div className="cap-cell">
             <h3>Always On</h3>
-            <p>Scheduled jobs, background tasks, recurring workflows.</p>
+            <p>Cron jobs, background tasks, automations.</p>
           </div>
         </div>
       </div>
@@ -77,40 +73,40 @@ export default function Home() {
 
       {/* ── HOW IT WORKS ── */}
       <div className="section" id="how">
-        <div className="section-tag">How It Works</div>
-        <h2>One gateway connects your channels, models, and tools.</h2>
+        <div className="section-tag">Architecture</div>
+        <h2>One process. Channels in, actions out.</h2>
         <p>
-          The Gateway is a single local process — it connects your messaging channels to the model you choose, manages sessions, stores memory as local files, and executes tasks through modular skills. Your data stays on your hardware.
+          The Gateway connects your messaging apps to the model and tools. Memory stays local. Skills are modular.
         </p>
 
         <div className="arch-box">
-          <div className="arch-label">Architecture</div>
+          <div className="arch-label">Stack</div>
           <div className="arch-stack">
             <div className="arch-layer layer-you">
-              You — WhatsApp &middot; Telegram &middot; Slack &middot; Discord &middot; 20+ channels
+              You — WhatsApp &middot; Telegram &middot; Slack &middot; Discord
             </div>
             <div className="arch-arrow">&#8597;</div>
             <div className="arch-layer layer-gateway">
-              OpenClaw Gateway — sessions &middot; memory &middot; skills &middot; heartbeat
+              Gateway — sessions &middot; memory &middot; skills
             </div>
             <div className="arch-arrow">&#8597;</div>
             <div className="arch-layer layer-models">
-              Models — Claude &middot; GPT &middot; DeepSeek &middot; Nemotron &middot; Ollama
+              Models — Claude &middot; GPT &middot; Nemotron &middot; Ollama
             </div>
             <div className="arch-arrow">&#8597;</div>
             <div className="arch-layer layer-tools">
-              Tools — browser &middot; shell &middot; files &middot; APIs &middot; cron
+              Tools — browser &middot; shell &middot; files &middot; APIs
             </div>
           </div>
           <div className="arch-caption">
-            Runs locally. Model-agnostic. Privacy by default.
+            Local. Model-agnostic. Private by default.
           </div>
         </div>
 
         <div className="nemo-callout" style={{ marginTop: "1.5rem" }}>
           <h3>NemoClaw</h3>
           <p>
-            NVIDIA&apos;s hardened layer on top of OpenClaw. Adds sandboxed execution, local Nemotron models, and policy-based security guardrails. Early preview.
+            NVIDIA&apos;s hardened version. Sandboxed execution, local Nemotron models, policy guardrails. Early preview.
           </p>
         </div>
       </div>
@@ -123,13 +119,10 @@ export default function Home() {
         <h2>Start here.</h2>
         <div className="video-box">
           <div className="video-placeholder">
-            <div className="video-coming-label">Video Coming Soon</div>
-            <div className="video-sub">Claws Out — Episode 1</div>
+            <div className="video-coming-label">Coming Soon</div>
+            <div className="video-sub">Claws Out — Ep. 1</div>
           </div>
         </div>
-        <p className="video-caption">
-          Short explainer. Mental model before you read the repo.
-        </p>
       </div>
 
       <div className="divider"><hr /></div>
@@ -140,19 +133,19 @@ export default function Home() {
           <div className="demo-tag">Live Demo</div>
           <h2 className="demo-h2">Talk to a real claw.</h2>
           <p className="demo-sub">
-            A live OpenClaw instance with web search and summarization. Real software, limited toolset, guardrails on.
+            Live OpenClaw instance. Web search, summarization, OpenClaw Q&amp;A. Sandboxed.
           </p>
           <DemoChat />
           <p className="demo-below">
-            This is a sandboxed demo. A full setup can do significantly more — shell, email, calendar, file management, smart home, and thousands of community skills.
+            This demo is limited. A full setup adds shell, email, calendar, smart home, and thousands more skills.
           </p>
           <p className="demo-disclaimer">
-            Temporary sessions. No data collected. Rate limited. Powered by Claude Sonnet.
+            No data stored. Rate limited. Claude Sonnet.
           </p>
         </div>
       </div>
 
-      {/* ── SKILLS DIRECTORY ── */}
+      {/* ── SKILLS ── */}
       <div className="skills-wrap" id="skills">
         <div className="skills-inner">
           <div className="section-tag" style={{ color: "var(--red)" }}>Skills</div>
@@ -161,20 +154,20 @@ export default function Home() {
             fontSize: "1.5rem", fontWeight: 400, fontStyle: "italic",
             lineHeight: 1.3, marginBottom: "0.5rem",
           }}>
-            What you can do with it.
+            What it can do.
           </h2>
           <p style={{ fontSize: "0.92rem", color: "var(--text-mid)", marginBottom: "1.5rem" }}>
-            Curated picks based on community adoption. Always verify before installing. Official source:{" "}
+            Community picks. Verify before installing. Source:{" "}
             <a href="https://docs.openclaw.ai/cli/skills" target="_blank" rel="noopener noreferrer"
               style={{ color: "var(--red)", textDecoration: "none", fontWeight: 500 }}>
               ClawHub
-            </a>.
+            </a>
           </p>
           <SkillsDirectory />
           <div className="skills-note">
-            <span>Review skills before installing.</span>
+            <span>Always review source code first.</span>
             <a href="https://docs.openclaw.ai/cli/skills" target="_blank" rel="noopener noreferrer">
-              Full docs &rarr;
+              Docs &rarr;
             </a>
           </div>
         </div>
@@ -182,41 +175,34 @@ export default function Home() {
 
       <div className="divider"><hr /></div>
 
-      {/* ── SETUP SELECTOR ── */}
+      {/* ── SETUP ── */}
       <div className="setup-section" id="setup">
         <div className="section-tag">Setup</div>
         <h2 style={{
           fontFamily: "var(--font-serif), Georgia, serif",
           fontSize: "1.5rem", fontWeight: 400, fontStyle: "italic",
-          lineHeight: 1.3, marginBottom: "0.5rem",
+          lineHeight: 1.3, marginBottom: "1.5rem",
         }}>
           What should you run it on?
         </h2>
-        <p style={{ fontSize: "0.92rem", color: "var(--text-mid)", marginBottom: "1.8rem", lineHeight: 1.7 }}>
-          Pick your hardware, use case, and privacy preference.
-        </p>
         <SetupSelector />
       </div>
 
       <div className="divider"><hr /></div>
 
-      {/* ── SECURITY CHECKLIST ── */}
+      {/* ── SECURITY ── */}
       <div className="security-wrap" id="security">
         <div className="security-inner">
           <div className="section-tag" style={{ color: "var(--red)" }}>Security</div>
           <h2 style={{
             fontFamily: "var(--font-serif), Georgia, serif",
             fontSize: "1.5rem", fontWeight: 400, fontStyle: "italic",
-            lineHeight: 1.3, marginBottom: "0.5rem",
+            lineHeight: 1.3, marginBottom: "1.5rem",
           }}>
-            Before you deploy, read this.
+            Read this before deploying.
           </h2>
-          <p style={{ fontSize: "0.92rem", color: "var(--text-mid)", marginBottom: "1.8rem", lineHeight: 1.7 }}>
-            Real risks documented by Microsoft, Cisco, and the OpenClaw project.
-          </p>
           <SecurityChecklist />
           <div className="security-sources">
-            Sources:{" "}
             <a href="https://docs.openclaw.ai/gateway/security" target="_blank" rel="noopener noreferrer">OpenClaw Docs</a>{" "}&middot;{" "}
             <a href="https://www.microsoft.com/en-us/security/blog/2026/02/19/running-openclaw-safely-identity-isolation-runtime-risk/" target="_blank" rel="noopener noreferrer">Microsoft</a>{" "}&middot;{" "}
             <a href="https://github.com/slowmist/openclaw-security-practice-guide" target="_blank" rel="noopener noreferrer">SlowMist</a>
@@ -226,43 +212,32 @@ export default function Home() {
 
       <div className="divider"><hr /></div>
 
-      {/* ── COMMUNITY PULSE ── */}
+      {/* ── COMMUNITY ── */}
       <div className="pulse-wrap" id="community">
         <div className="pulse-inner">
           <div className="pulse-tag">Community</div>
           <h2 className="pulse-h2">Built in the open.</h2>
-          <p className="pulse-sub">
-            Live from the OpenClaw repo.
-          </p>
           <CommunityPulse />
         </div>
       </div>
 
-      {/* ── THREE PATHS ── */}
+      {/* ── PATHS ── */}
       <div className="paths-wrap" id="paths">
         <div className="paths-inner">
-          <div className="section-tag">Go Deeper</div>
-          <h2 style={{
-            fontFamily: "var(--font-serif), Georgia, serif",
-            fontSize: "1.5rem", fontWeight: 400, fontStyle: "italic",
-            lineHeight: 1.3, marginBottom: "1rem",
-          }}>
-            Where next?
-          </h2>
           <div className="paths-grid">
             <a href="/overview" className="path-card">
               <h3>Understand</h3>
-              <p>How the pieces fit together.</p>
+              <p>How it all fits together.</p>
               <div className="arrow">Overview &rarr;</div>
             </a>
             <a href="#watch" className="path-card">
               <h3>Watch</h3>
-              <p>Short video explainers.</p>
+              <p>Video explainers.</p>
               <div className="arrow">Videos &rarr;</div>
             </a>
             <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer" className="path-card">
               <h3>Source</h3>
-              <p>Repo, docs, raw materials.</p>
+              <p>The repo.</p>
               <div className="arrow">GitHub &rarr;</div>
             </a>
           </div>
@@ -272,9 +247,9 @@ export default function Home() {
       {/* ── ABOUT ── */}
       <div className="section about" id="about">
         <div className="section-tag">About</div>
-        <h2>What this site is.</h2>
+        <h2>Independent. Not official.</h2>
         <p>
-          KnowTheClaw is an independent resource by practitioners in the AI agent ecosystem. Not the official OpenClaw site. The goal: explain a fast-moving project clearly enough that you don&apos;t need to dig through the repo.
+          Made by practitioners. Not affiliated with the OpenClaw project. We just think this stuff matters and nobody&apos;s explaining it well yet.
         </p>
       </div>
 
@@ -283,27 +258,21 @@ export default function Home() {
         <div className="footer-inner">
           <div className="footer-left">
             <div className="footer-id">Know<span className="claw">The</span>Claw</div>
-            <div className="footer-sub">OpenClaw, explained.</div>
           </div>
           <div className="footer-cols">
             <div className="footer-col">
-              <h4>Site</h4>
               <ul>
                 <li><a href="#what">What It Does</a></li>
-                <li><a href="#demo">Live Demo</a></li>
+                <li><a href="#demo">Demo</a></li>
                 <li><a href="#skills">Skills</a></li>
-                <li><a href="#setup">Setup</a></li>
                 <li><a href="#security">Security</a></li>
-                <li><a href="#community">Community</a></li>
               </ul>
             </div>
             <div className="footer-col">
-              <h4>Source</h4>
               <ul>
                 <li><a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer">GitHub</a></li>
                 <li><a href="https://openclaw.ai" target="_blank" rel="noopener noreferrer">openclaw.ai</a></li>
                 <li><a href="https://docs.openclaw.ai" target="_blank" rel="noopener noreferrer">Docs</a></li>
-                <li><a href="https://www.nvidia.com/en-us/ai/nemoclaw/" target="_blank" rel="noopener noreferrer">NemoClaw</a></li>
               </ul>
             </div>
           </div>
