@@ -15,13 +15,13 @@ export default function Home() {
         <div className="hero-tag fi">
           <span style={{ fontSize: "1rem" }}>&#x1F99E;</span> Open-Source AI Agent
         </div>
-        <h1 className="fi fi2">AI that acts, not just chats.</h1>
+        <h1 className="fi fi2">Your computer just got an employee.</h1>
         <p className="hero-sub fi fi3">
-          OpenClaw runs on your machine, works through the apps you already use, and handles real work — inbox, scheduling, research, code, and automation. KnowTheClaw explains what it is, how it works, and why it matters.
+          OpenClaw is an open-source AI agent that runs on your machine. It reads your email, writes code, searches the web, manages files, and runs tasks on a schedule — through the apps you already use. No cloud. No subscription. Yours.
         </p>
         <div className="cta-row fi fi4">
-          <a href="#demo-1" className="btn-primary">See it work</a>
-          <a href="/overview" className="btn-secondary">Read the Overview</a>
+          <a href="#try-it" className="btn-primary">Talk to the Agent</a>
+          <a href="#demo-1" className="btn-secondary">Watch the Explainer</a>
         </div>
       </div>
 
@@ -50,16 +50,16 @@ export default function Home() {
         <div className="demo-section" id="demo-1">
           <div className="demo-section-inner">
             <div className="demo-section-tag">Explainer</div>
-            <h2 className="demo-section-h2">OpenClaw, NemoClaw, OpenShell — in 60 seconds.</h2>
+            <h2 className="demo-section-h2">The ecosystem in 60 seconds.</h2>
             <p className="demo-section-sub">
-              Three names. Three layers. OpenClaw is the engine — the open-source agent that sends emails, writes code, and manages files. OpenShell is the roll cage — NVIDIA&apos;s security layer that locks down what the agent can access. NemoClaw is the dealership — one command installs everything, models included, running locally so your data never leaves.
+              People keep mixing up OpenClaw, NemoClaw, and OpenShell. They&apos;re not competing products — they&apos;re layers. One is the agent, one locks it down, and one packages the whole thing so you can install it with a single command. This video sorts it out.
             </p>
             <div className="video-box">
               <video
                 controls
                 preload="metadata"
                 playsInline
-                style={{ width: "100%", borderRadius: "8px", background: "#000" }}
+                style={{ width: "100%", display: "block", borderRadius: "8px" }}
               >
                 <source src="/videos/openclaw-explained.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
@@ -72,7 +72,7 @@ export default function Home() {
         <div className="interstitial">
           <div className="interstitial-inner">
             <p>
-              Engine, roll cage, dealership. That&apos;s the stack. Now see what it can actually do.
+              Three layers, one stack. Now here&apos;s why that architecture matters.
             </p>
           </div>
         </div>
@@ -81,16 +81,16 @@ export default function Home() {
         <div className="demo-section" id="demo-2">
           <div className="demo-section-inner">
             <div className="demo-section-tag">Security</div>
-            <h2 className="demo-section-h2">Why the agent can&apos;t police itself.</h2>
+            <h2 className="demo-section-h2">The problem with self-policing agents.</h2>
             <p className="demo-section-sub">
-              An AI agent deleted a safety director&apos;s entire inbox — unprompted. The guardrails lived inside the agent&apos;s own software. When it misbehaved, they went down with it. OpenShell puts security outside the agent entirely. The agent runs in a locked room. The rules are enforced by the room.
+              Most agent frameworks put their safety checks inside the agent itself — same process, same environment. That works until it doesn&apos;t. This video covers a real incident and explains how OpenShell takes a fundamentally different approach to agent security.
             </p>
             <div className="video-box">
               <video
                 controls
                 preload="metadata"
                 playsInline
-                style={{ width: "100%", borderRadius: "8px", background: "#000" }}
+                style={{ width: "100%", display: "block", borderRadius: "8px" }}
               >
                 <source src="/videos/openclaw-video-2.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
@@ -123,7 +123,7 @@ export default function Home() {
           <div className="demo-tag">Try It</div>
           <h2 className="demo-h2">Talk to a claw.</h2>
           <p className="demo-sub">
-            OpenClaw agent demo. Pick a prompt or type your own. Sandboxed — no data stored.
+            Live OpenClaw agent. Pick a prompt or type your own. Sandboxed — no data stored.
           </p>
           <div className="prompt-cards">
             <button className="prompt-card" data-prompt="research">
@@ -147,7 +147,7 @@ export default function Home() {
             This demo is limited. A full setup adds shell, email, calendar, smart home, and thousands more skills.
           </p>
           <p className="demo-disclaimer">
-            No data stored. Rate limited. Powered by OpenAI.
+            No data stored. Sandboxed. Rate limited.
           </p>
         </div>
       </div>

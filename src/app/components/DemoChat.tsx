@@ -2,10 +2,8 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 
-const MAX_MESSAGES = 20
-
 const OPENING_MESSAGE =
-  "Hey — I'm an OpenClaw demo agent. I can answer questions about OpenClaw, walk you through what it does, and show you what an agent conversation feels like. If you ask me to do something that needs connectors (email, calendar, etc.), I'll show you what that would look like with a full setup. What do you want to try?"
+  "Hey — I'm an OpenClaw agent. I can answer questions, walk you through what OpenClaw does, and show you what working with an AI agent actually feels like. Need me to research something, check a URL, or explain how the stack works? Just ask."
 
 interface Message {
   role: 'user' | 'assistant'
@@ -20,7 +18,6 @@ export default function DemoChat() {
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [typing, setTyping] = useState(false)
-  const [userMessageCount, setUserMessageCount] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const messagesRef = useRef<HTMLDivElement>(null)
 
@@ -36,7 +33,6 @@ export default function DemoChat() {
 
   const startSession = () => {
     setMessages([{ role: 'assistant', content: OPENING_MESSAGE }])
-    setUserMessageCount(0)
     setError(null)
     setScreen('chat')
   }
@@ -44,7 +40,6 @@ export default function DemoChat() {
   const endSession = () => {
     setMessages([])
     setInput('')
-    setUserMessageCount(0)
     setError(null)
     setScreen('start')
   }
@@ -53,18 +48,12 @@ export default function DemoChat() {
     const text = input.trim()
     if (!text || sending) return
 
-    if (userMessageCount >= MAX_MESSAGES) {
-      setError('Message limit reached. Start a new session to continue.')
-      return
-    }
-
     setInput('')
     setError(null)
     setSending(true)
 
     const newMessages: Message[] = [...messages, { role: 'user', content: text }]
     setMessages(newMessages)
-    setUserMessageCount(prev => prev + 1)
     setTyping(true)
 
     try {
@@ -107,9 +96,9 @@ export default function DemoChat() {
       <div className="demo-chat">
         <div className="demo-start">
           <div className="demo-start-icon">&#x1f9ea;</div>
-          <h3>OpenClaw Agent Demo</h3>
+          <h3>OpenClaw Agent</h3>
           <p>
-            Talk to an OpenClaw-style agent. Ask it anything &mdash; see what an AI agent that acts, not just chats, feels like.
+            Talk to an OpenClaw agent. Ask it anything &mdash; research, architecture, setup, or just see what working with an AI agent feels like.
           </p>
           <button className="demo-start-btn" onClick={startSession}>
             Start Demo
@@ -118,8 +107,6 @@ export default function DemoChat() {
       </div>
     )
   }
-
-  const remaining = MAX_MESSAGES - userMessageCount
 
   return (
     <div className="demo-chat">
@@ -159,22 +146,18 @@ export default function DemoChat() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          disabled={sending || remaining <= 0}
+          disabled={sending}
         />
         <button
           className="demo-send-btn"
           onClick={sendMessage}
-          disabled={sending || !input.trim() || remaining <= 0}
+          disabled={sending || !input.trim()}
         >
           Send
         </button>
       </div>
 
-      <div className="demo-footer-text">
-        <span className="demo-remaining">
-          {remaining} message{remaining !== 1 ? 's' : ''} remaining
-        </span>
-      </div>
+      <div className="demo-footer-text" />
     </div>
   )
 }
