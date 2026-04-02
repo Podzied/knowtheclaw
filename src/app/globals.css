@@ -198,8 +198,11 @@ nav {
 
 /* ── VIDEO ── */
 .video-box {
-  position: relative; width: 100%; padding-bottom: 56.25%;
-  background: var(--bg-dark); border-radius: 6px; overflow: hidden; margin-bottom: 0.8rem;
+  position: relative; width: 100%;
+  border-radius: 6px; overflow: hidden; margin-bottom: 0.8rem;
+}
+.video-box:has(.video-placeholder) {
+  padding-bottom: 56.25%; background: var(--bg-dark);
 }
 .video-placeholder {
   position: absolute; inset: 0; display: flex; flex-direction: column;
