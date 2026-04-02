@@ -99,19 +99,77 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Demo 3 */}
+        {/* Interstitial before demos */}
+        <div className="interstitial">
+          <div className="interstitial-inner">
+            <p>
+              That&apos;s the theory. Here&apos;s what it actually looks like when someone uses it.
+            </p>
+          </div>
+        </div>
+
+        {/* Demo 1 — Trip Planning */}
         <div className="demo-section" id="demo-3">
           <div className="demo-section-inner">
             <div className="demo-section-tag">Demo</div>
-            <h2 className="demo-section-h2">URL &rarr; Analyst Readout</h2>
+            <h2 className="demo-section-h2">Plan a trip without touching your inbox.</h2>
             <p className="demo-section-sub">
-              Paste a URL. OpenClaw reads it, extracts the key claims, checks them against other sources, and returns a structured analyst readout.
+              A real trip to San Francisco. Flights, hotel, meetings, conflicts — the agent pulls it all from your email and calendar, figures out the logistics, and drafts reschedule emails where needed. You just approve and send.
             </p>
             <div className="video-box">
-              <div className="video-placeholder">
-                <div className="video-coming-label">Coming Soon</div>
-                <div className="video-sub">URL → Analyst Readout — Full Walkthrough</div>
-              </div>
+              <video
+                controls
+                preload="metadata"
+                playsInline
+                style={{ width: "100%", display: "block", borderRadius: "8px" }}
+              >
+                <source src="/videos/demo-01.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+
+        {/* Demo 2 — Workspace Comparison */}
+        <div className="demo-section" id="demo-4">
+          <div className="demo-section-inner">
+            <div className="demo-section-tag">Demo</div>
+            <h2 className="demo-section-h2">Compare options without opening ten tabs.</h2>
+            <p className="demo-section-sub">
+              Three co-working spaces, one off-site to plan. The agent visits each site, pulls pricing, reviews, amenities, and transit access, then picks the best fit and writes the booking email. Research that would take an hour, done in minutes.
+            </p>
+            <div className="video-box">
+              <video
+                controls
+                preload="metadata"
+                playsInline
+                style={{ width: "100%", display: "block", borderRadius: "8px" }}
+              >
+                <source src="/videos/demo-02.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+
+        {/* Demo 3 — Competitive Research */}
+        <div className="demo-section" id="demo-5">
+          <div className="demo-section-inner">
+            <div className="demo-section-tag">Demo</div>
+            <h2 className="demo-section-h2">Build a competitive cheat sheet before your pitch.</h2>
+            <p className="demo-section-sub">
+              Two competitors, one week until the pitch. The agent searches for their latest announcements, pricing changes, and what people are saying on Twitter and Hacker News — then builds a positioning brief with strengths, weaknesses, and your best angle of attack.
+            </p>
+            <div className="video-box">
+              <video
+                controls
+                preload="metadata"
+                playsInline
+                style={{ width: "100%", display: "block", borderRadius: "8px" }}
+              >
+                <source src="/videos/demo-03.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
           </div>
         </div>
