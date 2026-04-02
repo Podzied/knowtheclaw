@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KnowTheClaw — OpenClaw, Explained</title>
+  <meta name="description" content="KnowTheClaw explains what OpenClaw is and how it works — in plain English. The open-source AI agent that runs locally and handles real work through the apps you already use.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Geist+Mono:wght@400;500&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F7F6F3;
+      --bg-dark: #1C1B19;
+      --bg-warm: #EDEAE4;
+      --text: #1C1B19;
+      --text-mid: #4A4840;
+      --text-light: #7A7870;
+      --red: #D4402A;
+      --red-dark: #B5301D;
+      --green: #2D6B45;
+      --blue: #2B5B8A;
+      --border: #D8D5CD;
+      --card: #FFFFFF;
+      --serif: 'Instrument Serif', Georgia, serif;
+      --sans: 'Source Sans 3', -apple-system, sans-serif;
+      --mono: 'Geist Mono', 'SF Mono', monospace;
+      --max: 700px;
+      --wide: 920px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 17px; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--sans); color: var(--text); background: var(--bg); line-height: 1.72; }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(247,246,243,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: var(--wide); margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 54px; padding: 0 1.5rem;
+    }
+    .nav-mark {
+      font-family: var(--mono); font-weight: 500; font-size: 0.8rem;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--text); text-decoration: none;
+    }
+    .nav-mark .claw { color: var(--red); }
+    .nav-links { display: flex; gap: 1.75rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.82rem; font-weight: 500; color: var(--text-light);
+      text-decoration: none; transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .mobile-menu-btn {
+      display: none; background: none; border: none; cursor: pointer; padding: 8px;
+      flex-direction: column; gap: 4px;
+    }
+    .mobile-menu-btn span { display: block; width: 18px; height: 1.5px; background: var(--text); }
+    .mobile-nav {
+      display: none; flex-direction: column; gap: 0;
+      background: var(--bg); border-bottom: 1px solid var(--border);
+    }
+    .mobile-nav a {
+      display: block; padding: 0.75rem 1.5rem;
+      font-size: 0.88rem; font-weight: 500; color: var(--text-mid);
+      text-decoration: none; border-top: 1px solid var(--border);
+    }
+    .mobile-nav a:hover { color: var(--text); background: var(--bg-warm); }
+    .mobile-nav.open { display: flex; }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: var(--max); margin: 0 auto;
+      padding: 4.5rem 1.5rem 3.5rem;
+    }
+    .hero-tag {
+      font-family: var(--mono); font-size: 0.7rem; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 1.2rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .hero-tag .lobster { font-size: 1rem; }
+    .hero h1 {
+      font-family: var(--serif); font-size: clamp(2rem, 5vw, 2.65rem);
+      line-height: 1.18; font-weight: 400; font-style: italic;
+      color: var(--text); margin-bottom: 1.4rem; max-width: 580px;
+    }
+    .hero-sub {
+      font-size: 1.05rem; line-height: 1.72; color: var(--text-mid);
+      max-width: 540px; margin-bottom: 2rem;
+    }
+    .cta-row { display: flex; gap: 0.85rem; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      padding: 0.7rem 1.35rem; background: var(--red); color: #fff;
+      font-family: var(--sans); font-size: 0.86rem; font-weight: 600;
+      border: none; border-radius: 5px; text-decoration: none;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .btn-primary:hover { background: var(--red-dark); }
+    .btn-primary svg { width: 14px; height: 14px; fill: currentColor; }
+    .btn-secondary {
+      display: inline-flex; align-items: center;
+      padding: 0.7rem 1.35rem; background: transparent; color: var(--text);
+      font-family: var(--sans); font-size: 0.86rem; font-weight: 600;
+      border: 1.5px solid var(--border); border-radius: 5px;
+      text-decoration: none; cursor: pointer; transition: border-color 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--text-light); }
+
+    /* ── SECTIONS ── */
+    .section { max-width: var(--max); margin: 0 auto; padding: 3rem 1.5rem; }
+    .section-tag {
+      font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 1.1rem;
+    }
+    .section h2 {
+      font-family: var(--serif); font-size: 1.5rem; font-weight: 400;
+      font-style: italic; line-height: 1.3; margin-bottom: 1.1rem;
+    }
+    .section p {
+      font-size: 1rem; line-height: 1.78; color: var(--text-mid); margin-bottom: 0.9rem;
+    }
+    .section p:last-child { margin-bottom: 0; }
+    .divider { max-width: var(--max); margin: 0 auto; padding: 0 1.5rem; }
+    .divider hr { border: none; border-top: 1px solid var(--border); }
+
+    /* ── SHIFT SECTION (full width tint) ── */
+    .shift-wrap { background: var(--bg-warm); padding: 3rem 1.5rem; }
+    .shift-inner { max-width: var(--max); margin: 0 auto; }
+
+    /* ── WHAT IT DOES (capabilities) ── */
+    .capabilities {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border); border-radius: 6px;
+      overflow: hidden; margin-top: 1.5rem;
+    }
+    .cap-cell {
+      background: var(--card); padding: 1.4rem 1.3rem;
+    }
+    .cap-cell h3 {
+      font-family: var(--mono); font-size: 0.74rem; font-weight: 500;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--text); margin-bottom: 0.4rem;
+    }
+    .cap-cell p {
+      font-size: 0.88rem; line-height: 1.6; color: var(--text-mid); margin: 0;
+    }
+
+    /* ── HOW IT WORKS (diagram) ── */
+    .arch-box {
+      background: var(--bg-dark); border-radius: 6px;
+      padding: 2.2rem 1.8rem; margin-top: 1.5rem; color: #fff;
+    }
+    .arch-label {
+      font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); margin-bottom: 1.8rem; text-align: center;
+    }
+    .arch-stack {
+      display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+    }
+    .arch-layer {
+      width: 100%; max-width: 480px; text-align: center;
+      padding: 0.75rem 1rem; border-radius: 4px;
+      font-family: var(--mono); font-size: 0.76rem; font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .layer-you { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.12); }
+    .layer-channels { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.85); }
+    .layer-gateway { background: var(--red); color: #fff; }
+    .layer-models { background: rgba(45,107,69,0.9); color: #fff; }
+    .layer-tools { background: rgba(43,91,138,0.9); color: #fff; }
+    .arch-arrow {
+      font-size: 0.9rem; color: rgba(255,255,255,0.3);
+      line-height: 1; user-select: none;
+    }
+    .arch-caption {
+      text-align: center; margin-top: 1.5rem;
+      font-size: 0.78rem; color: rgba(255,255,255,0.45); line-height: 1.6;
+    }
+
+    /* ── NEMOCLAW ── */
+    .nemo-callout {
+      background: var(--card); border: 1px solid var(--border);
+      border-left: 3px solid var(--green); border-radius: 4px;
+      padding: 1.4rem 1.4rem; margin-top: 1.2rem;
+    }
+    .nemo-callout h3 {
+      font-family: var(--mono); font-size: 0.74rem; font-weight: 500;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 0.5rem;
+    }
+    .nemo-callout p {
+      font-size: 0.92rem; line-height: 1.7; color: var(--text-mid); margin: 0;
+    }
+
+    /* ── VIDEO ── */
+    .video-box {
+      position: relative; width: 100%; padding-bottom: 56.25%;
+      background: var(--bg-dark); border-radius: 6px; overflow: hidden;
+      margin-bottom: 0.8rem;
+    }
+    .video-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 0.8rem;
+    }
+    .play-btn {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--red); display: flex; align-items: center;
+      justify-content: center; cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .play-btn:hover { transform: scale(1.06); }
+    .play-btn svg { width: 20px; height: 20px; fill: #fff; margin-left: 2px; }
+    .video-coming-label {
+      font-family: var(--mono); font-size: 0.78rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 0.5rem 1.2rem; border-radius: 4px;
+    }
+    .video-sub {
+      font-family: var(--mono); font-size: 0.72rem;
+      color: rgba(255,255,255,0.5); letter-spacing: 0.03em;
+    }
+    .video-caption { font-size: 0.86rem; color: var(--text-light); }
+
+    /* ── LIVE DEMO ── */
+    .demo-wrap { background: var(--bg-dark); padding: 3.5rem 1.5rem; }
+    .demo-inner { max-width: var(--max); margin: 0 auto; }
+    .demo-tag {
+      font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 1.1rem;
+    }
+    .demo-h2 {
+      font-family: var(--serif); font-size: 1.5rem; font-weight: 400;
+      font-style: italic; line-height: 1.3; margin-bottom: 0.6rem; color: #fff;
+    }
+    .demo-sub {
+      font-size: 0.92rem; color: rgba(255,255,255,0.55); margin-bottom: 2rem; line-height: 1.7;
+    }
+
+    .demo-chat {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; overflow: hidden;
+      background: rgba(255,255,255,0.03);
+    }
+
+    /* start screen */
+    .demo-start {
+      padding: 3rem 2rem; text-align: center;
+    }
+    .demo-start-icon {
+      font-size: 1.6rem; margin-bottom: 1rem; opacity: 0.6;
+    }
+    .demo-start h3 {
+      font-family: var(--serif); font-size: 1.25rem; font-weight: 400;
+      font-style: italic; color: #fff; margin-bottom: 0.6rem;
+    }
+    .demo-start p {
+      font-size: 0.86rem; color: rgba(255,255,255,0.5); line-height: 1.65;
+      max-width: 440px; margin: 0 auto 1.5rem;
+    }
+    .demo-start-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.7rem 1.6rem; background: var(--red); color: #fff;
+      font-family: var(--sans); font-size: 0.86rem; font-weight: 600;
+      border: none; border-radius: 5px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .demo-start-btn:hover { background: var(--red-dark); }
+    .demo-start-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .demo-error { color: var(--red); font-size: 0.82rem; margin-top: 0.8rem; }
+
+    /* chat header */
+    .demo-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .demo-header-left { display: flex; align-items: center; gap: 0.5rem; }
+    .demo-status {
+      width: 7px; height: 7px; border-radius: 50%; background: #444;
+    }
+    .demo-status.live { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.4); }
+    .demo-status.dead { background: #ef4444; }
+    .demo-title {
+      font-family: var(--mono); font-size: 0.78rem; font-weight: 500; color: #fff;
+    }
+    .demo-badge {
+      font-family: var(--mono); font-size: 0.56rem; font-weight: 500;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.06);
+      padding: 0.15rem 0.45rem; border-radius: 3px;
+    }
+    .demo-end-btn {
+      background: none; border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.5); padding: 0.25rem 0.7rem;
+      border-radius: 4px; font-size: 0.72rem; cursor: pointer;
+      font-family: var(--sans); transition: all 0.15s;
+    }
+    .demo-end-btn:hover { border-color: rgba(255,255,255,0.25); color: #fff; }
+
+    /* messages area */
+    .demo-messages {
+      padding: 1rem; min-height: 280px; max-height: 420px;
+      overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .demo-msg { max-width: 82%; animation: dmFadeIn 0.2s ease; }
+    .demo-msg.visitor { align-self: flex-end; }
+    .demo-msg.claw { align-self: flex-start; }
+    .demo-msg-body {
+      padding: 0.6rem 0.9rem; border-radius: 10px;
+      font-size: 0.86rem; line-height: 1.55; white-space: pre-wrap; word-break: break-word;
+    }
+    .demo-msg.visitor .demo-msg-body {
+      background: var(--red); color: #fff; border-bottom-right-radius: 3px;
+    }
+    .demo-msg.claw .demo-msg-body {
+      background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.85);
+      border-bottom-left-radius: 3px;
+    }
+    .demo-typing {
+      display: flex; gap: 4px; padding: 0.85rem 1rem;
+    }
+    .demo-typing span {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(255,255,255,0.35); animation: dmBounce 1.2s infinite;
+    }
+    .demo-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .demo-typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes dmBounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-5px); }
+    }
+    @keyframes dmFadeIn {
+      from { opacity: 0; transform: translateY(3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* error bar */
+    .demo-error-bar {
+      padding: 0.5rem 1rem; background: rgba(212,64,42,0.1);
+      border-top: 1px solid rgba(212,64,42,0.15);
+      color: var(--red); font-size: 0.78rem; text-align: center;
+    }
+
+    /* input area */
+    .demo-input-area {
+      display: flex; gap: 0.5rem; padding: 0.75rem 1rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .demo-input {
+      flex: 1; background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 6px;
+      padding: 0.6rem 0.8rem; font-family: var(--sans); font-size: 0.86rem;
+      color: #fff; outline: none; transition: border-color 0.15s;
+    }
+    .demo-input::placeholder { color: rgba(255,255,255,0.25); }
+    .demo-input:focus { border-color: rgba(255,255,255,0.2); }
+    .demo-send-btn {
+      background: var(--red); color: #fff; border: none;
+      padding: 0.6rem 1.1rem; border-radius: 6px;
+      font-family: var(--sans); font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .demo-send-btn:hover { background: var(--red-dark); }
+    .demo-send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    /* remaining + footer */
+    .demo-remaining {
+      text-align: center; padding: 0.25rem 1rem;
+      font-family: var(--mono); font-size: 0.66rem;
+      color: rgba(255,255,255,0.3);
+    }
+    .demo-footer {
+      text-align: center; padding: 0.5rem 1rem 0.75rem;
+      font-size: 0.68rem; color: rgba(255,255,255,0.2);
+    }
+
+    /* below-widget copy */
+    .demo-below {
+      margin-top: 1.5rem; font-size: 0.84rem; color: rgba(255,255,255,0.4);
+      line-height: 1.65;
+    }
+    .demo-disclaimer {
+      margin-top: 1rem; font-size: 0.72rem; color: rgba(255,255,255,0.25);
+      line-height: 1.6;
+    }
+
+    /* ── THREE PATHS ── */
+    .paths-wrap { background: var(--bg-warm); padding: 3rem 1.5rem; }
+    .paths-inner { max-width: var(--wide); margin: 0 auto; }
+    .paths-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; margin-top: 1.3rem;
+    }
+    .path-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 6px; padding: 1.6rem 1.3rem;
+      text-decoration: none; color: var(--text);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .path-card:hover { border-color: var(--text-light); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    .path-card h3 { font-family: var(--serif); font-size: 1.15rem; font-weight: 400; font-style: italic; }
+    .path-card p { font-size: 0.85rem; color: var(--text-mid); line-height: 1.6; margin: 0; }
+    .path-card .arrow { font-family: var(--mono); font-size: 0.76rem; color: var(--red); margin-top: auto; padding-top: 0.3rem; }
+
+    /* ── ABOUT ── */
+    .about p { font-size: 0.94rem; line-height: 1.8; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.5rem; background: var(--bg);
+    }
+    .footer-inner {
+      max-width: var(--wide); margin: 0 auto;
+      display: flex; justify-content: space-between;
+      align-items: flex-start; flex-wrap: wrap; gap: 1.5rem;
+    }
+    .footer-left { display: flex; flex-direction: column; gap: 0.35rem; }
+    .footer-id {
+      font-family: var(--mono); font-weight: 500; font-size: 0.76rem;
+      letter-spacing: 0.04em; text-transform: uppercase; color: var(--text);
+    }
+    .footer-id .claw { color: var(--red); }
+    .footer-sub { font-size: 0.76rem; color: var(--text-light); }
+    .footer-cols { display: flex; gap: 2.5rem; }
+    .footer-col h4 {
+      font-family: var(--mono); font-size: 0.66rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-light); margin-bottom: 0.6rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+    .footer-col a {
+      font-size: 0.8rem; color: var(--text-light);
+      text-decoration: none; transition: color 0.15s;
+    }
+    .footer-col a:hover { color: var(--text); }
+
+    /* ── COMMUNITY PULSE ── */
+    .pulse-wrap { background: var(--bg-dark); padding: 3.5rem 1.5rem; color: #fff; }
+    .pulse-inner { max-width: var(--wide); margin: 0 auto; }
+    .pulse-tag {
+      font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 1.1rem;
+    }
+    .pulse-h2 {
+      font-family: var(--serif); font-size: 1.5rem; font-weight: 400;
+      font-style: italic; line-height: 1.3; margin-bottom: 0.6rem; color: #fff;
+    }
+    .pulse-sub {
+      font-size: 0.92rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; line-height: 1.6;
+    }
+
+    /* stats bar */
+    .repo-stats {
+      display: flex; gap: 1px; background: rgba(255,255,255,0.08);
+      border-radius: 6px; overflow: hidden; margin-bottom: 2.2rem;
+    }
+    .stat-cell {
+      flex: 1; background: rgba(255,255,255,0.04);
+      padding: 1.1rem 1rem; text-align: center;
+    }
+    .stat-num {
+      font-family: var(--mono); font-size: 1.4rem; font-weight: 500;
+      color: #fff; line-height: 1;
+    }
+    .stat-num.loading { color: rgba(255,255,255,0.2); }
+    .stat-label {
+      font-family: var(--mono); font-size: 0.62rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4); margin-top: 0.4rem;
+    }
+
+    /* contributors */
+    .contrib-section-title {
+      font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4); margin-bottom: 1rem;
+    }
+    .contrib-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.75rem; margin-bottom: 2.2rem;
+    }
+    .contrib-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px; padding: 1rem; text-align: center;
+      text-decoration: none; color: #fff;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .contrib-card:hover {
+      background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15);
+    }
+    .contrib-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      margin: 0 auto 0.6rem; display: block;
+      background: rgba(255,255,255,0.1);
+    }
+    .contrib-name {
+      font-family: var(--mono); font-size: 0.74rem; font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .contrib-count {
+      font-size: 0.68rem; color: rgba(255,255,255,0.4); margin-top: 0.2rem;
+    }
+
+    /* recent commits */
+    .commits-list { display: flex; flex-direction: column; gap: 0; }
+    .commit-row {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 0.8rem 0; border-top: 1px solid rgba(255,255,255,0.06);
+      text-decoration: none; color: #fff; transition: background 0.12s;
+    }
+    .commit-row:hover { background: rgba(255,255,255,0.03); }
+    .commit-avatar {
+      width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+      margin-top: 2px; background: rgba(255,255,255,0.1);
+    }
+    .commit-body { flex: 1; min-width: 0; }
+    .commit-msg {
+      font-size: 0.84rem; line-height: 1.5; color: rgba(255,255,255,0.8);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .commit-meta {
+      font-family: var(--mono); font-size: 0.66rem;
+      color: rgba(255,255,255,0.35); margin-top: 0.15rem;
+    }
+    .commit-sha {
+      font-family: var(--mono); font-size: 0.68rem;
+      color: rgba(255,255,255,0.25); flex-shrink: 0; margin-top: 3px;
+    }
+
+    .pulse-footer {
+      margin-top: 1.8rem; padding-top: 1.2rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.76rem; color: rgba(255,255,255,0.35);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.5rem;
+    }
+    .pulse-footer a {
+      color: var(--red); text-decoration: none; font-weight: 500;
+      transition: color 0.15s;
+    }
+    .pulse-footer a:hover { color: #fff; }
+
+    /* placeholder shimmer */
+    @keyframes shimmer {
+      0% { opacity: 0.3; } 50% { opacity: 0.6; } 100% { opacity: 0.3; }
+    }
+    .shimmer { animation: shimmer 1.5s infinite; }
+
+    /* ── SKILLS DIRECTORY ── */
+    .skills-wrap { background: var(--bg-warm); padding: 3.5rem 1.5rem; }
+    .skills-inner { max-width: var(--wide); margin: 0 auto; }
+    .skills-controls {
+      display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+    .skills-search {
+      flex: 1; min-width: 200px; padding: 0.65rem 1rem;
+      font-family: var(--sans); font-size: 0.88rem;
+      border: 1px solid var(--border); border-radius: 5px;
+      background: var(--card); color: var(--text); outline: none;
+    }
+    .skills-search:focus { border-color: var(--red); }
+    .skills-search::placeholder { color: var(--text-light); }
+    .filter-btn {
+      padding: 0.5rem 0.9rem; font-family: var(--mono); font-size: 0.7rem;
+      font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 4px; cursor: pointer; color: var(--text-mid);
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { border-color: var(--text-mid); }
+    .filter-btn.active { background: var(--text); color: #fff; border-color: var(--text); }
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.75rem;
+    }
+    .skill-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+      padding: 1.2rem; text-decoration: none; color: var(--text);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      display: flex; flex-direction: column; gap: 0.4rem;
+    }
+    .skill-card:hover { border-color: var(--text-light); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .skill-card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .skill-name {
+      font-family: var(--mono); font-size: 0.82rem; font-weight: 500; color: var(--text);
+    }
+    .skill-badge {
+      font-family: var(--mono); font-size: 0.58rem; font-weight: 500;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      padding: 0.2rem 0.5rem; border-radius: 3px;
+      background: rgba(45,107,69,0.1); color: var(--green); white-space: nowrap;
+    }
+    .skill-badge.official { background: rgba(212,64,42,0.1); color: var(--red); }
+    .skill-desc { font-size: 0.82rem; color: var(--text-mid); line-height: 1.5; }
+    .skill-meta {
+      font-family: var(--mono); font-size: 0.66rem; color: var(--text-light);
+      margin-top: auto; padding-top: 0.3rem;
+    }
+    .skills-empty {
+      grid-column: 1 / -1; text-align: center; padding: 2rem;
+      color: var(--text-light); font-size: 0.92rem;
+    }
+    .skills-note {
+      margin-top: 1.2rem; font-size: 0.78rem; color: var(--text-light);
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .skills-note a { color: var(--red); text-decoration: none; font-weight: 500; }
+
+    /* ── SETUP SELECTOR ── */
+    .setup-section { max-width: var(--max); margin: 0 auto; padding: 3.5rem 1.5rem; }
+    .setup-step { margin-bottom: 1.5rem; }
+    .setup-step-label {
+      font-family: var(--mono); font-size: 0.7rem; font-weight: 500;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--text-light); margin-bottom: 0.6rem;
+    }
+    .setup-options { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .setup-opt {
+      padding: 0.6rem 1.1rem; font-family: var(--sans); font-size: 0.86rem;
+      background: var(--card); border: 1.5px solid var(--border); border-radius: 5px;
+      cursor: pointer; color: var(--text-mid); transition: all 0.15s;
+    }
+    .setup-opt:hover { border-color: var(--text-mid); }
+    .setup-opt.selected { background: var(--text); color: #fff; border-color: var(--text); }
+    .setup-result {
+      background: var(--bg-dark); border-radius: 6px; padding: 1.8rem;
+      color: #fff; display: none;
+    }
+    .setup-result.visible { display: block; }
+    .setup-result h3 {
+      font-family: var(--serif); font-size: 1.2rem; font-weight: 400;
+      font-style: italic; margin-bottom: 0.8rem;
+    }
+    .setup-result p { font-size: 0.9rem; line-height: 1.7; color: rgba(255,255,255,0.7); margin-bottom: 0.6rem; }
+    .setup-result code {
+      display: block; font-family: var(--mono); font-size: 0.78rem;
+      background: rgba(255,255,255,0.08); padding: 0.8rem 1rem;
+      border-radius: 4px; margin-top: 0.8rem; color: rgba(255,255,255,0.8);
+      overflow-x: auto;
+    }
+    .setup-result .rec-tag {
+      font-family: var(--mono); font-size: 0.62rem; font-weight: 500;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 0.6rem;
+    }
+
+    /* ── SECURITY CHECKLIST ── */
+    .security-wrap { background: var(--bg-warm); padding: 3.5rem 1.5rem; }
+    .security-inner { max-width: var(--max); margin: 0 auto; }
+    .check-group { margin-bottom: 1.5rem; }
+    .check-group-title {
+      font-family: var(--mono); font-size: 0.7rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-mid); margin-bottom: 0.6rem;
+      padding-bottom: 0.4rem; border-bottom: 1px solid var(--border);
+    }
+    .check-item {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 0.65rem 0; cursor: pointer; user-select: none;
+    }
+    .check-box {
+      width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px;
+      border: 1.5px solid var(--border); border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; background: var(--card);
+    }
+    .check-item.checked .check-box {
+      background: var(--green); border-color: var(--green);
+    }
+    .check-box svg { width: 12px; height: 12px; fill: #fff; opacity: 0; transition: opacity 0.15s; }
+    .check-item.checked .check-box svg { opacity: 1; }
+    .check-text { flex: 1; }
+    .check-text strong { font-weight: 600; font-size: 0.92rem; color: var(--text); }
+    .check-text p { font-size: 0.82rem; color: var(--text-mid); line-height: 1.5; margin: 0.15rem 0 0; }
+    .check-item.checked .check-text strong { color: var(--text-light); text-decoration: line-through; }
+    .check-item.checked .check-text p { color: var(--text-light); }
+    .check-progress {
+      margin-top: 1.5rem; display: flex; align-items: center; gap: 1rem;
+    }
+    .check-bar {
+      flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
+    }
+    .check-bar-fill {
+      height: 100%; background: var(--green); border-radius: 3px;
+      transition: width 0.3s ease; width: 0%;
+    }
+    .check-pct {
+      font-family: var(--mono); font-size: 0.78rem; font-weight: 500; color: var(--text-mid);
+      min-width: 36px; text-align: right;
+    }
+    .security-sources {
+      margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border);
+      font-size: 0.76rem; color: var(--text-light); line-height: 1.7;
+    }
+    .security-sources a { color: var(--red); text-decoration: none; font-weight: 500; }
+    .check-group-src {
+      font-family: var(--mono); font-size: 0.62rem; font-weight: 400;
+      color: var(--text-light); margin-left: 0.5rem; letter-spacing: 0;
+      text-transform: none;
+    }
+    .check-group-src a { color: var(--red); text-decoration: none; }
+    .check-group-src a:hover { text-decoration: underline; }
+
+    /* ── FADE ── */
+    .fi { opacity: 0; transform: translateY(10px); animation: fu 0.45s ease forwards; }
+    .fi2 { animation-delay: 0.1s; }
+    .fi3 { animation-delay: 0.18s; }
+    .fi4 { animation-delay: 0.26s; }
+    @keyframes fu { to { opacity: 1; transform: translateY(0); } }
+
+    /* ── MOBILE ── */
+    @media (max-width: 680px) {
+      html { font-size: 16px; }
+      .hero { padding: 3rem 1.25rem 2.5rem; }
+      .hero h1 { font-size: 1.8rem; }
+      .nav-links { display: none; }
+      .mobile-menu-btn { display: flex; }
+      .capabilities { grid-template-columns: 1fr; }
+      .paths-grid { grid-template-columns: 1fr; }
+      .repo-stats { flex-wrap: wrap; }
+      .stat-cell { flex: 1 1 45%; }
+      .contrib-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+      .commit-sha { display: none; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .setup-options { flex-direction: column; }
+      .setup-opt { text-align: center; }
+      .footer-inner { flex-direction: column; }
+      .footer-cols { flex-direction: column; gap: 1.25rem; }
+    }
+  </style>
+</head>
+<body id="top">
+
+<nav>
+  <div class="nav-inner">
+    <a href="#top" class="nav-mark">Know<span class="claw">The</span>Claw</a>
+    <ul class="nav-links">
+      <li><a href="#shift">What Changed</a></li>
+      <li><a href="#what">What It Does</a></li>
+      <li><a href="#demo">Live Demo</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#setup">Setup</a></li>
+      <li><a href="#security">Security</a></li>
+      <li><a href="#community">Community</a></li>
+    </ul>
+    <button class="mobile-menu-btn" aria-label="Menu" onclick="document.getElementById('mobile-nav').classList.toggle('open')"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="#shift" onclick="document.getElementById('mobile-nav').classList.remove('open')">What Changed</a>
+    <a href="#what" onclick="document.getElementById('mobile-nav').classList.remove('open')">What It Does</a>
+    <a href="#demo" onclick="document.getElementById('mobile-nav').classList.remove('open')">Live Demo</a>
+    <a href="#skills" onclick="document.getElementById('mobile-nav').classList.remove('open')">Skills</a>
+    <a href="#setup" onclick="document.getElementById('mobile-nav').classList.remove('open')">Setup</a>
+    <a href="#security" onclick="document.getElementById('mobile-nav').classList.remove('open')">Security</a>
+    <a href="#community" onclick="document.getElementById('mobile-nav').classList.remove('open')">Community</a>
+    <a href="#about" onclick="document.getElementById('mobile-nav').classList.remove('open')">About</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+
+<div class="hero">
+  <div class="hero-tag fi"><span class="lobster">&#x1F99E;</span> Local-First AI Agent</div>
+  <h1 class="fi fi2">AI that acts, not just chats.</h1>
+  <p class="hero-sub fi fi3">OpenClaw runs on your machine, works through the apps you already use, and handles real work — inbox, scheduling, research, code, and automation. KnowTheClaw explains what it is, how it works, and why it matters.</p>
+  <div class="cta-row fi fi4">
+    <a href="overview.html" class="btn-primary">Read the Overview</a>
+    <a href="#demo" class="btn-secondary">Try the Live Demo</a>
+  </div>
+</div>
+
+<!-- ── THE SHIFT ── -->
+
+<div class="shift-wrap" id="shift">
+  <div class="shift-inner">
+    <div class="section-tag">What Changed</div>
+    <h2 style="font-family:var(--serif);font-size:1.5rem;font-weight:400;font-style:italic;line-height:1.3;margin-bottom:1.1rem;">AI moved from answers to actions.</h2>
+    <p style="font-size:1rem;line-height:1.78;color:var(--text-mid);margin-bottom:0.9rem;">For the past few years, AI mostly meant chat: ask a question, get an answer, move on. Now the interface is changing. Instead of only answering questions, agents can take action across the tools you already use — triaging email, scheduling meetings, running research, writing code, and handling recurring tasks. The important shift is not better conversation. It's delegated execution.</p>
+    <p style="font-size:1rem;line-height:1.78;color:var(--text-mid);">OpenClaw is one of the clearest open-source examples of that shift. This site exists to explain what it is, how it works, and why it matters.</p>
+  </div>
+</div>
+
+<!-- ── WHAT IT DOES ── -->
+
+<div class="section" id="what">
+  <div class="section-tag">What OpenClaw Does</div>
+  <h2>A local AI agent that works through the tools you already use.</h2>
+  <p>OpenClaw runs as a background service on your own machine — laptop, Mac Mini, Raspberry Pi, or DGX Spark. You interact with it through familiar channels like WhatsApp, Telegram, Slack, and Discord. It connects to the model you choose, keeps memory locally, and can execute tasks directly — not just suggest next steps.</p>
+
+  <div class="capabilities">
+    <div class="cap-cell">
+      <h3>Inbox &amp; Calendar</h3>
+      <p>Triage email, draft replies, manage scheduling, send reminders, and surface conflicts.</p>
+    </div>
+    <div class="cap-cell">
+      <h3>Code &amp; Systems</h3>
+      <p>Run shell commands, inspect repos, debug issues, and automate repetitive dev work.</p>
+    </div>
+    <div class="cap-cell">
+      <h3>Research &amp; Files</h3>
+      <p>Search the web, read local files, and combine both into usable summaries or reports.</p>
+    </div>
+    <div class="cap-cell">
+      <h3>Always On</h3>
+      <p>Run scheduled jobs, background tasks, and recurring workflows without waiting for a fresh prompt.</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ── HOW IT WORKS ── -->
+
+<div class="section" id="how">
+  <div class="section-tag">How It Works</div>
+  <h2>One local gateway connects your channels, models, and tools.</h2>
+  <p>OpenClaw runs a single local process called the Gateway — the control plane for your assistant. It connects your messaging channels to the model you choose, manages sessions, stores memory as local Markdown files, and executes tasks through modular skills. The Gateway is the infrastructure. The product is the assistant it creates.</p>
+  <p>Your data stays on your hardware unless you decide otherwise.</p>
+
+  <div class="arch-box">
+    <div class="arch-label">Architecture</div>
+    <div class="arch-stack">
+      <div class="arch-layer layer-you">You — WhatsApp &middot; Telegram &middot; Slack &middot; Discord &middot; 20+ channels</div>
+      <div class="arch-arrow">&#8597;</div>
+      <div class="arch-layer layer-gateway">OpenClaw Gateway — sessions &middot; memory &middot; skills &middot; heartbeat</div>
+      <div class="arch-arrow">&#8597;</div>
+      <div class="arch-layer layer-models">Models — Claude &middot; GPT &middot; DeepSeek &middot; Nemotron &middot; Ollama</div>
+      <div class="arch-arrow">&#8597;</div>
+      <div class="arch-layer layer-tools">Tools — browser &middot; shell &middot; files &middot; APIs &middot; cron</div>
+    </div>
+    <div class="arch-caption">Runs on your machine. Model-agnostic. Privacy by default.<br>Extend with modular skills or build your own.</div>
+  </div>
+
+  <div class="nemo-callout" style="margin-top:1.5rem;">
+    <h3>Where NemoClaw Fits</h3>
+    <p>NVIDIA built NemoClaw on top of OpenClaw for environments that need tighter controls around security, privacy, and execution. It adds the OpenShell runtime for sandboxed agent execution, local Nemotron model support, and policy-based privacy and security guardrails for running OpenClaw more safely in controlled environments. Currently in early preview.</p>
+  </div>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ── VIDEO ── -->
+
+<div class="section" id="watch">
+  <div class="section-tag">Watch</div>
+  <h2>Start here.</h2>
+  <div class="video-box">
+    <div class="video-placeholder">
+      <div class="video-coming-label">Video Coming Soon</div>
+      <div class="video-sub">Claws Out — Episode 1</div>
+    </div>
+  </div>
+  <p class="video-caption">A short explainer for people who want the mental model before they read the repo.</p>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ── LIVE DEMO ── -->
+
+<div class="demo-wrap" id="demo">
+  <div class="demo-inner">
+    <div class="demo-tag">Live Demo</div>
+    <h2 class="demo-h2">Talk to a real claw.</h2>
+    <p class="demo-sub">This is a live OpenClaw instance running in a restricted demo environment. It can search the web, summarize content, and answer questions about OpenClaw in real time. It's the actual software, with a limited toolset and guardrails.</p>
+
+    <div class="demo-chat" id="demo-chat">
+      <!-- Start screen (shown by default) -->
+      <div class="demo-start" id="demo-screen-start">
+        <div class="demo-start-icon">&#9670;</div>
+        <h3>Ready when you are.</h3>
+        <p>You'll be chatting with a real OpenClaw agent — not a chatbot, not a simulation. It's running on a dedicated server with web search and summarization skills enabled.</p>
+        <button class="demo-start-btn" id="demo-start-btn" onclick="demoChat.start()">Start Demo</button>
+        <div class="demo-error" id="demo-start-error"></div>
+      </div>
+
+      <!-- Chat screen (hidden by default) -->
+      <div id="demo-screen-chat" style="display:none;">
+        <div class="demo-header">
+          <div class="demo-header-left">
+            <div class="demo-status live" id="demo-status-dot"></div>
+            <span class="demo-title">TheClaw</span>
+            <span class="demo-badge">Live Demo</span>
+          </div>
+          <button class="demo-end-btn" onclick="demoChat.end()">End</button>
+        </div>
+        <div class="demo-messages" id="demo-messages"></div>
+        <div class="demo-error-bar" id="demo-error-bar" style="display:none;"></div>
+        <div class="demo-input-area">
+          <input type="text" class="demo-input" id="demo-input" placeholder="Ask the claw something..." maxlength="500" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();demoChat.send();}">
+          <button class="demo-send-btn" id="demo-send-btn" onclick="demoChat.send()">Send</button>
+        </div>
+        <div class="demo-remaining" id="demo-remaining" style="display:none;"></div>
+        <div class="demo-footer">Sandboxed OpenClaw instance &middot; web search + summarization &middot; no personal data collected</div>
+      </div>
+    </div>
+
+    <p class="demo-below">This demo runs a sandboxed OpenClaw instance with web search and summarization skills. A full setup on your own hardware can do significantly more — shell access, email, calendar, file management, smart home control, and thousands of community skills.</p>
+    <p class="demo-disclaimer">Demo sessions are temporary. No personal data is collected. Rate limited. Powered by Claude Sonnet.</p>
+  </div>
+</div>
+
+<!-- ── SKILLS DIRECTORY ── -->
+
+<div class="skills-wrap" id="skills">
+  <div class="skills-inner">
+    <div class="section-tag" style="color:var(--red);">Skills Directory</div>
+    <h2 style="font-family:var(--serif);font-size:1.5rem;font-weight:400;font-style:italic;line-height:1.3;margin-bottom:0.5rem;">What you can actually do with OpenClaw.</h2>
+    <p style="font-size:0.92rem;color:var(--text-mid);margin-bottom:1.5rem;">A curated shortlist of skills worth knowing about — not a canonical registry. These picks are opinionated, based on community adoption and published reviews. Always verify before installing. The official source is <a href="https://docs.openclaw.ai/cli/skills" target="_blank" rel="noopener" style="color:var(--red);text-decoration:none;font-weight:500;">ClawHub</a>.</p>
+    <div class="skills-controls">
+      <input type="text" class="skills-search" id="skills-search" placeholder="Search skills...">
+      <button class="filter-btn active" data-cat="all">All</button>
+      <button class="filter-btn" data-cat="productivity">Productivity</button>
+      <button class="filter-btn" data-cat="dev">Dev</button>
+      <button class="filter-btn" data-cat="search">Search</button>
+      <button class="filter-btn" data-cat="comms">Comms</button>
+      <button class="filter-btn" data-cat="security">Security</button>
+    </div>
+    <div class="skills-grid" id="skills-grid"></div>
+    <div class="skills-note">
+      <span>Curated from ClawHub and community sources. Always review skills before installing.</span>
+      <a href="https://docs.openclaw.ai/cli/skills" target="_blank" rel="noopener">Full skills docs &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ── SETUP SELECTOR ── -->
+
+<div class="setup-section" id="setup">
+  <div class="section-tag">Setup Guide</div>
+  <h2 style="font-family:var(--serif);font-size:1.5rem;font-weight:400;font-style:italic;line-height:1.3;margin-bottom:0.5rem;">What should you run it on?</h2>
+  <p style="font-size:0.92rem;color:var(--text-mid);margin-bottom:1.8rem;line-height:1.7;">Pick your hardware and use case. We'll recommend a practical setup.</p>
+
+  <div class="setup-step">
+    <div class="setup-step-label">1. What hardware are you using?</div>
+    <div class="setup-options" id="hw-options">
+      <div class="setup-opt" data-hw="macmini">Mac Mini</div>
+      <div class="setup-opt" data-hw="laptop">Laptop (Mac/PC)</div>
+      <div class="setup-opt" data-hw="rpi">Raspberry Pi</div>
+      <div class="setup-opt" data-hw="dgx">DGX Spark</div>
+      <div class="setup-opt" data-hw="vps">Cloud VPS</div>
+    </div>
+  </div>
+
+  <div class="setup-step">
+    <div class="setup-step-label">2. What's your primary use case?</div>
+    <div class="setup-options" id="use-options">
+      <div class="setup-opt" data-use="personal">Personal assistant</div>
+      <div class="setup-opt" data-use="dev">Dev automation</div>
+      <div class="setup-opt" data-use="team">Team / shared agent</div>
+      <div class="setup-opt" data-use="experiment">Just experimenting</div>
+    </div>
+  </div>
+
+  <div class="setup-step">
+    <div class="setup-step-label">3. Privacy preference?</div>
+    <div class="setup-options" id="privacy-options">
+      <div class="setup-opt" data-priv="local">Fully local (no cloud models)</div>
+      <div class="setup-opt" data-priv="hybrid">Hybrid (local + cloud API)</div>
+      <div class="setup-opt" data-priv="cloud">Cloud models are fine</div>
+    </div>
+  </div>
+
+  <div class="setup-result" id="setup-result"></div>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ── SECURITY CHECKLIST ── -->
+
+<div class="security-wrap" id="security">
+  <div class="security-inner">
+    <div class="section-tag" style="color:var(--red);">Security</div>
+    <h2 style="font-family:var(--serif);font-size:1.5rem;font-weight:400;font-style:italic;line-height:1.3;margin-bottom:0.5rem;">Before you deploy, read this.</h2>
+    <p style="font-size:0.92rem;color:var(--text-mid);margin-bottom:1.8rem;line-height:1.7;">OpenClaw has real security surface. These aren't theoretical risks — they've been documented by Microsoft, Cisco, and the OpenClaw project itself. Use this checklist.</p>
+
+    <div class="check-group">
+      <div class="check-group-title">Isolation <span class="check-group-src">— <a href="https://www.microsoft.com/en-us/security/blog/2026/02/19/running-openclaw-safely-identity-isolation-runtime-risk/" target="_blank" rel="noopener">Microsoft Security Blog</a></span></div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div class="check-text"><strong>Run on a dedicated machine or VM</strong><p>Don't run OpenClaw on a workstation with personal data, work credentials, or browser sessions. Use a separate Mac Mini, Raspberry Pi, VPS, or VM.</p></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div class="check-text"><strong>Use dedicated accounts for the agent</strong><p>Don't sign OpenClaw into your primary email, calendar, or password manager. Create separate accounts with only the access it needs.</p></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div class="check-text"><strong>Don't run as root</strong><p>Use a non-privileged user for the OpenClaw process. Limit filesystem access to the directories it needs.</p></div>
+      </div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">Network &amp; Authentication <span class="check-group-src">— <a href="https://docs.openclaw.ai/gateway/security" target="_blank" rel="noopener">OpenClaw Security Docs</a></span></div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div class="check-text"><strong>Enable gateway authentication</strong><p>The gateway ships with auth disabled by default. Enable it immediately. Regenerate your token after first setup.</p></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div class="check-text"><strong>Bind to localhost only</strong><p>Don't expose port 18789 to the public internet. Use SSH tunneling or VPN for remote access.</p></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div class="check-text"><strong>Lock down DM policies</strong><p>Use pairing or allowlists. Don't let unknown senders message your agent. Run <code style="font-family:var(--mono);font-size:0.78rem;background:rgba(0,0,0,0.06);padding:0.1rem 0.3rem;border-radius:2px;">openclaw doctor</code> to check.</p></div>
+      </div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">Skills &amp; Execution <span class="check-group-src">— <a href="https://docs.openclaw.ai/gateway/security" target="_blank" rel="noopener">OpenClaw Docs</a> &middot; <a href="https://openclaw.ai/blog/virustotal-partnership" target="_blank" rel="noopener">VirusTotal Partnership</a></span></div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div class="check-text"><strong>Review every skill before installing</strong><p>ClawHub has had malicious skills (the ClawHavoc campaign found 1,100+). Check the author, star count, version history. Read the source code.</p></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div class="check-text"><strong>Check VirusTotal reports on ClawHub</strong><p>OpenClaw partnered with VirusTotal for skill scanning. Check a skill's ClawHub page for the security report before you install.</p></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div class="check-text"><strong>Use a strong model for tool-enabled agents</strong><p>Weaker models are more vulnerable to prompt injection. Use the best model tier available for agents with shell, browser, or file access.</p></div>
+      </div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">Maintenance <span class="check-group-src">— <a href="https://github.com/slowmist/openclaw-security-practice-guide" target="_blank" rel="noopener">SlowMist Guide</a> &middot; <a href="https://www.digitalocean.com/resources/articles/openclaw-security-challenges" target="_blank" rel="noopener">DigitalOcean</a></span></div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div class="check-text"><strong>Keep OpenClaw updated</strong><p>CVE-2026-25253 enabled remote code execution via WebSocket hijacking. It's patched in 2026.1.29+. Unpatched instances should be assumed compromised.</p></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div class="check-text"><strong>Rotate gateway tokens periodically</strong><p>Treat pre-patch tokens as compromised. Use <code style="font-family:var(--mono);font-size:0.78rem;background:rgba(0,0,0,0.06);padding:0.1rem 0.3rem;border-radius:2px;">openclaw gateway --regenerate-token</code> regularly.</p></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+        <div class="check-text"><strong>Monitor agent activity</strong><p>Review logs regularly. Watch for unexpected tool calls, network requests to unknown domains, or behavioral changes that could indicate compromise.</p></div>
+      </div>
+    </div>
+
+    <div class="check-progress">
+      <div class="check-bar"><div class="check-bar-fill" id="check-fill"></div></div>
+      <div class="check-pct" id="check-pct">0%</div>
+    </div>
+
+    <div class="security-sources">
+      Sources: <a href="https://docs.openclaw.ai/gateway/security" target="_blank" rel="noopener">OpenClaw Security Docs</a> &middot; <a href="https://www.microsoft.com/en-us/security/blog/2026/02/19/running-openclaw-safely-identity-isolation-runtime-risk/" target="_blank" rel="noopener">Microsoft Security Blog</a> &middot; <a href="https://github.com/slowmist/openclaw-security-practice-guide" target="_blank" rel="noopener">SlowMist Security Guide</a>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- ── COMMUNITY PULSE ── -->
+
+<div class="pulse-wrap" id="community">
+  <div class="pulse-inner">
+    <div class="pulse-tag">Community</div>
+    <h2 class="pulse-h2">Built in the open, by the community.</h2>
+    <p class="pulse-sub">OpenClaw is open source. These are the people building it — live from the repo.</p>
+
+    <!-- Repo stats -->
+    <div class="repo-stats" id="repo-stats">
+      <div class="stat-cell">
+        <div class="stat-num shimmer" id="stat-stars">&mdash;</div>
+        <div class="stat-label">Stars</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num shimmer" id="stat-forks">&mdash;</div>
+        <div class="stat-label">Forks</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num shimmer" id="stat-issues">&mdash;</div>
+        <div class="stat-label">Open Issues</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num shimmer" id="stat-contribs">&mdash;</div>
+        <div class="stat-label">Contributors</div>
+      </div>
+    </div>
+
+    <!-- Top contributors -->
+    <div class="contrib-section-title">Top Contributors</div>
+    <div class="contrib-grid" id="contrib-grid"></div>
+
+    <!-- Recent commits -->
+    <div class="contrib-section-title">Recent Activity</div>
+    <div class="commits-list" id="commits-list"></div>
+
+    <div class="pulse-footer">
+      <span>Live data from the OpenClaw repository</span>
+      <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener">View full repo &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── THREE PATHS ── -->
+
+<div class="paths-wrap" id="paths">
+  <div class="paths-inner">
+    <div class="section-tag">Go Deeper</div>
+    <h2 style="font-family:var(--serif);font-size:1.5rem;font-weight:400;font-style:italic;line-height:1.3;margin-bottom:1rem;">Where do you want to go next?</h2>
+    <div class="paths-grid">
+      <a href="overview.html" class="path-card">
+        <h3>Understand</h3>
+        <p>What OpenClaw is, what it does, and how the pieces fit together.</p>
+        <div class="arrow">Read the overview &rarr;</div>
+      </a>
+      <a href="#watch" class="path-card">
+        <h3>Watch</h3>
+        <p>Short explainers for people who want the model fast.</p>
+        <div class="arrow">Watch videos &rarr;</div>
+      </a>
+      <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener" class="path-card">
+        <h3>Go to the Source</h3>
+        <p>Repo, docs, and primary materials for builders who want the raw thing.</p>
+        <div class="arrow">View on GitHub &rarr;</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ── ABOUT ── -->
+
+<div class="section about" id="about">
+  <div class="section-tag">About This Site</div>
+  <h2>What this site is.</h2>
+  <p>KnowTheClaw is an independent educational resource created by practitioners working in and around the AI agent ecosystem. It is not the official OpenClaw project site. The goal is simple: explain a fast-moving technical project clearly enough that builders, operators, and leaders can understand what matters without digging through the repo first.</p>
+  <p>This site has a point of view. We think the move from chatbots to agents that take action is real and still poorly explained. OpenClaw is one of the clearest examples, so we use it as the case study.</p>
+</div>
+
+<!-- ── FOOTER ── -->
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div class="footer-id">Know<span class="claw">The</span>Claw</div>
+      <div class="footer-sub">Clear explanations of OpenClaw and the shift from chat to agents.</div>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h4>This Site</h4>
+        <ul>
+          <li><a href="#shift">What Changed</a></li>
+          <li><a href="#what">What It Does</a></li>
+          <li><a href="#demo">Live Demo</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#setup">Setup</a></li>
+          <li><a href="#security">Security</a></li>
+          <li><a href="#community">Community</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Source Materials</h4>
+        <ul>
+          <li><a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener">OpenClaw on GitHub</a></li>
+          <li><a href="https://openclaw.ai" target="_blank" rel="noopener">openclaw.ai</a></li>
+          <li><a href="https://docs.openclaw.ai" target="_blank" rel="noopener">OpenClaw Docs</a></li>
+          <li><a href="https://www.nvidia.com/en-us/ai/nemoclaw/" target="_blank" rel="noopener">NemoClaw by NVIDIA</a></li>
+          <li><a href="https://github.com/NVIDIA/NemoClaw" target="_blank" rel="noopener">NemoClaw on GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ── SCRIPTS ── -->
+
+<script>
+// ── LIVE DEMO CHAT ──
+var demoChat = (function() {
+  var API = 'https://demo-api.knowtheclaw.com';
+  var sessionId = null;
+  var loading = false;
+  var messagesRemaining = null;
+
+  function $(id) { return document.getElementById(id); }
+
+  function showScreen(name) {
+    $('demo-screen-start').style.display = name === 'start' ? '' : 'none';
+    $('demo-screen-chat').style.display = name === 'chat' ? '' : 'none';
+  }
+
+  function addMsg(role, text) {
+    var el = document.createElement('div');
+    el.className = 'demo-msg ' + role;
+    el.innerHTML = '<div class="demo-msg-body">' + escHtml(text) + '</div>';
+    $('demo-messages').appendChild(el);
+    $('demo-messages').scrollTop = $('demo-messages').scrollHeight;
+  }
+
+  function showTyping() {
+    var el = document.createElement('div');
+    el.className = 'demo-msg claw';
+    el.id = 'demo-typing';
+    el.innerHTML = '<div class="demo-msg-body demo-typing"><span></span><span></span><span></span></div>';
+    $('demo-messages').appendChild(el);
+    $('demo-messages').scrollTop = $('demo-messages').scrollHeight;
+  }
+
+  function hideTyping() {
+    var el = $('demo-typing');
+    if (el) el.remove();
+  }
+
+  function showError(msg) {
+    var bar = $('demo-error-bar');
+    bar.textContent = msg;
+    bar.style.display = '';
+    setTimeout(function() { bar.style.display = 'none'; }, 6000);
+  }
+
+  function setLoading(on) {
+    loading = on;
+    $('demo-send-btn').disabled = on;
+    $('demo-input').disabled = on;
+    if (!on) $('demo-input').focus();
+  }
+
+  function updateRemaining() {
+    var el = $('demo-remaining');
+    if (messagesRemaining !== null && messagesRemaining <= 5) {
+      el.textContent = messagesRemaining + ' message' + (messagesRemaining !== 1 ? 's' : '') + ' remaining';
+      el.style.display = '';
+    }
+  }
+
+  function escHtml(s) {
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  async function start() {
+    $('demo-start-btn').disabled = true;
+    $('demo-start-btn').textContent = 'Connecting...';
+    $('demo-start-error').textContent = '';
+
+    try {
+      var res = await fetch(API + '/api/session/create', { method: 'POST' });
+      var data = await res.json();
+
+      if (!res.ok) {
+        $('demo-start-error').textContent = data.message || 'Could not start session.';
+        $('demo-start-btn').disabled = false;
+        $('demo-start-btn').textContent = 'Start Demo';
+        return;
+      }
+
+      sessionId = data.sessionId;
+      showScreen('chat');
+      addMsg('claw', "Hey \u2014 I'm a live OpenClaw instance running on a real server. I can search the web, summarize content, and answer questions about OpenClaw. What do you want to try?");
+      $('demo-input').focus();
+
+    } catch (e) {
+      $('demo-start-error').textContent = 'Could not connect to the demo server. Try again in a moment.';
+      $('demo-start-btn').disabled = false;
+      $('demo-start-btn').textContent = 'Start Demo';
+    }
+  }
+
+  async function send() {
+    var input = $('demo-input');
+    var text = input.value.trim();
+    if (!text || !sessionId || loading) return;
+
+    input.value = '';
+    addMsg('visitor', text);
+    setLoading(true);
+    showTyping();
+    $('demo-error-bar').style.display = 'none';
+
+    try {
+      var res = await fetch(API + '/api/session/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId: sessionId, message: text })
+      });
+      var data = await res.json();
+      hideTyping();
+
+      if (!res.ok) {
+        if (data.error === 'session_expired') {
+          $('demo-status-dot').className = 'demo-status dead';
+          showError('Session expired. Click End to start a new one.');
+        } else {
+          showError(data.message || 'Something went wrong.');
+        }
+        setLoading(false);
+        return;
+      }
+
+      addMsg('claw', data.response);
+      messagesRemaining = data.messagesRemaining;
+      updateRemaining();
+
+    } catch (e) {
+      hideTyping();
+      showError('Connection lost. Try again.');
+    }
+    setLoading(false);
+  }
+
+  async function end() {
+    if (sessionId) {
+      try {
+        await fetch(API + '/api/session/end', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: sessionId })
+        });
+      } catch (e) {}
+    }
+    sessionId = null;
+    messagesRemaining = null;
+    $('demo-messages').innerHTML = '';
+    $('demo-error-bar').style.display = 'none';
+    $('demo-remaining').style.display = 'none';
+    $('demo-status-dot').className = 'demo-status live';
+    $('demo-start-btn').disabled = false;
+    $('demo-start-btn').textContent = 'Start Demo';
+    $('demo-start-error').textContent = '';
+    showScreen('start');
+  }
+
+  return { start: start, send: send, end: end };
+})();
+</script>
+
+<script>
+// ── SKILLS DIRECTORY ──
+(function() {
+  var skills = [
+    { name: "GOG (Google Workspace)", cat: "productivity", desc: "Gmail, Calendar, Drive, Contacts, Sheets, and Docs through a single CLI integration.", badge: "Popular", official: false, meta: "14k+ downloads \u00b7 @nicepkg" },
+    { name: "Capability Evolver", cat: "productivity", desc: "Lets the agent automatically improve its own capabilities over time. Adapts and optimizes during operation.", badge: "Popular", official: false, meta: "35k+ downloads \u00b7 community" },
+    { name: "Obsidian", cat: "productivity", desc: "Read, create, organize, and update notes in your Obsidian vault. Automates knowledge management.", badge: "", official: false, meta: "community \u00b7 knowledge mgmt" },
+    { name: "Summarize", cat: "productivity", desc: "Turns long content into structured summaries. Works on articles, meeting notes, email threads, and research papers.", badge: "", official: false, meta: "community \u00b7 bundled-ready" },
+    { name: "Tavily Search", cat: "search", desc: "AI-optimized web search that returns structured results. Purpose-built for agents, not generic web scraping.", badge: "Popular", official: false, meta: "community \u00b7 search" },
+    { name: "Exa Search", cat: "search", desc: "Developer-focused search index pulling from docs, GitHub repos, and coding forums instead of generic web results.", badge: "", official: false, meta: "community \u00b7 dev search" },
+    { name: "ElevenLabs Agent", cat: "comms", desc: "Voice AI integration with failsafe: if text/email fails, the agent makes an actual phone call instead.", badge: "", official: false, meta: "community \u00b7 voice" },
+    { name: "WhatsApp CLI", cat: "comms", desc: "Message third parties on WhatsApp, sync and search your WhatsApp history through the wacli binary.", badge: "", official: false, meta: "@nicepkg \u00b7 messaging" },
+    { name: "N8N Workflow", cat: "dev", desc: "Chat-driven control over your local N8N instance. Trigger complex automations without a dashboard.", badge: "", official: false, meta: "community \u00b7 automation" },
+    { name: "Vercel", cat: "dev", desc: "Plain English commands that translate to Vercel CLI actions \u2014 deploy, rollback, and debug without a terminal.", badge: "", official: false, meta: "community \u00b7 deployment" },
+    { name: "Home Assistant", cat: "productivity", desc: "Natural language control over your smart home. Fully local, zero cloud dependency.", badge: "", official: false, meta: "community \u00b7 smart home" },
+    { name: "OpenAI Whisper", cat: "dev", desc: "Runs Whisper locally for fast, accurate transcriptions without audio leaving your machine.", badge: "", official: false, meta: "community \u00b7 audio" },
+    { name: "Skill Vetter", cat: "security", desc: "Scans other skills for red flags before and after installation. Install this first.", badge: "Essential", official: false, meta: "3.5k downloads \u00b7 security" },
+    { name: "Credential Manager", cat: "security", desc: "Mandatory security foundation for OpenClaw. Handles credential storage properly.", badge: "Essential", official: true, meta: "first-party \u00b7 security" },
+    { name: "ClawdStrike", cat: "security", desc: "Security audit and threat model for OpenClaw gateway hosts. Finds misconfigurations.", badge: "", official: false, meta: "community \u00b7 audit" },
+    { name: "Domain Trust Check", cat: "security", desc: "Check any URL for phishing, malware, brand abuse, and scams before the agent visits it.", badge: "", official: false, meta: "community \u00b7 safety" },
+    { name: "Composio", cat: "dev", desc: "One integration that connects 860+ external tools (GitHub, Slack, Gmail, etc.) without building auth pipelines.", badge: "Popular", official: false, meta: "composio.dev \u00b7 integrations" },
+    { name: "Ontology", cat: "productivity", desc: "Organizes knowledge into structured concepts and relationships. Useful for research mapping and knowledge graphs.", badge: "", official: false, meta: "community \u00b7 knowledge" }
+  ];
+
+  var grid = document.getElementById('skills-grid');
+  var search = document.getElementById('skills-search');
+  var currentCat = 'all';
+
+  function render() {
+    var q = search.value.toLowerCase();
+    var filtered = skills.filter(function(s) {
+      var matchCat = currentCat === 'all' || s.cat === currentCat;
+      var matchSearch = !q || s.name.toLowerCase().indexOf(q) > -1 || s.desc.toLowerCase().indexOf(q) > -1;
+      return matchCat && matchSearch;
+    });
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="skills-empty">No skills match your search.</div>';
+      return;
+    }
+    grid.innerHTML = filtered.map(function(s) {
+      var badgeClass = s.official ? 'skill-badge official' : 'skill-badge';
+      var badgeHtml = s.badge ? '<span class="' + badgeClass + '">' + s.badge + '</span>' : '';
+      return '<div class="skill-card">' +
+        '<div class="skill-card-top"><span class="skill-name">' + s.name + '</span>' + badgeHtml + '</div>' +
+        '<div class="skill-desc">' + s.desc + '</div>' +
+        '<div class="skill-meta">' + s.meta + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  search.addEventListener('input', render);
+  document.querySelectorAll('.filter-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      currentCat = btn.getAttribute('data-cat');
+      render();
+    });
+  });
+  render();
+})();
+
+// ── SETUP SELECTOR ──
+(function() {
+  var hw = null, use = null, priv = null;
+  var configs = {
+    'macmini-personal-local': { title: 'Mac Mini \u2014 Personal, Fully Local', body: 'Strong setup. Mac Mini M-series has enough memory for capable local models. Run Ollama with Llama 3 or Nemotron for full privacy. OpenClaw runs 24/7 on low power draw. This is the most popular personal deployment.', cmd: 'brew install ollama && ollama pull llama3.3\ngit clone https://github.com/openclaw/openclaw && cd openclaw\npnpm install && pnpm build && pnpm openclaw onboard' },
+    'macmini-personal-hybrid': { title: 'Mac Mini \u2014 Personal, Hybrid', body: 'Best of both worlds. Use a local model for routine tasks and heartbeats, route complex work to Claude or GPT via API. Keeps costs low while maintaining quality on hard tasks.', cmd: 'ollama pull llama3.3  # local model for heartbeats\n# Set ANTHROPIC_API_KEY or OPENAI_API_KEY for cloud routing\npnpm openclaw onboard' },
+    'macmini-personal-cloud': { title: 'Mac Mini \u2014 Personal, Cloud Models', body: 'Simplest path to the best output quality. Use Claude or GPT-4o as the primary model. Mac Mini runs the Gateway and keeps memory local \u2014 only prompts hit the cloud. Expect $10\u201350/month in API costs depending on usage.', cmd: 'export ANTHROPIC_API_KEY="sk-ant-..."\npnpm openclaw onboard\nopenclaw models set anthropic/claude-sonnet-4' },
+    'macmini-dev-local': { title: 'Mac Mini \u2014 Dev Automation, Local', body: 'Good for code review, repo monitoring, and CI tasks. Local models work for structured dev tasks. 16GB Mac Mini handles most models; 32GB+ recommended for larger ones.', cmd: 'ollama pull llama3.3\npnpm openclaw onboard\n# Enable terminal, GitHub skills' },
+    'macmini-dev-hybrid': { title: 'Mac Mini \u2014 Dev Automation, Hybrid', body: 'Recommended for dev work. Local model handles monitoring and heartbeats. Cloud model handles code generation, debugging, and PR reviews where quality matters most.', cmd: 'ollama pull llama3.3\nexport ANTHROPIC_API_KEY="sk-ant-..."\npnpm openclaw onboard' },
+    'macmini-dev-cloud': { title: 'Mac Mini \u2014 Dev Automation, Cloud', body: 'Maximum capability for dev workflows. Claude or GPT-4o as primary. The Mac Mini is your always-on Gateway \u2014 let the best models do the heavy lifting.', cmd: 'export ANTHROPIC_API_KEY="sk-ant-..."\npnpm openclaw onboard\nopenclaw models set anthropic/claude-sonnet-4' },
+    'dgx-personal-local': { title: 'DGX Spark \u2014 Personal, Fully Local', body: 'The premium local setup. 128GB of memory means you can run frontier-class open models like Nemotron 120B with no cloud dependency. Purpose-built for always-on agents.', cmd: 'ollama pull nvidia/nemotron-3-super-120b\npnpm openclaw onboard\n# Or use NemoClaw: bash <(curl -fsSL get.nemoclaw.com)' },
+    'laptop-personal-cloud': { title: 'Laptop \u2014 Personal, Cloud Models', body: 'Works fine for experimentation and personal use, but your agent goes offline when the laptop sleeps. Use cloud models to avoid GPU demands. Good starting point before committing to dedicated hardware.', cmd: 'export ANTHROPIC_API_KEY="sk-ant-..."\npnpm openclaw onboard' },
+    'laptop-experiment-cloud': { title: 'Laptop \u2014 Just Experimenting', body: 'Fastest way to start. Clone, install, connect a cloud model, and start chatting. Don\'t put sensitive data on this instance \u2014 treat it as a playground.', cmd: 'git clone https://github.com/openclaw/openclaw\ncd openclaw && pnpm install && pnpm build\npnpm openclaw onboard' },
+    'rpi-personal-hybrid': { title: 'Raspberry Pi \u2014 Personal, Hybrid', body: 'Pi handles the Gateway and lightweight tasks. Route model calls to cloud APIs since Pi doesn\'t have GPU for local inference. Low-cost, always-on, low-power. Pi 5 recommended.', cmd: '# On Raspberry Pi 5\npnpm openclaw onboard\n# Connect to cloud model API' },
+    'rpi-personal-local': { title: 'Raspberry Pi \u2014 Personal, Local', body: 'Possible but limited. Pi can run very small models via Ollama but output quality will be constrained. Best for simple tasks and experimentation. Not recommended for tool-heavy workflows.', cmd: 'ollama pull phi3:mini  # small model for Pi\npnpm openclaw onboard' },
+    'vps-personal-cloud': { title: 'Cloud VPS \u2014 Personal, Cloud Models', body: 'Always-on agent without buying hardware. A $12\u201324/month VPS runs the Gateway 24/7. Use cloud models for inference. DigitalOcean and others offer OpenClaw 1-click deploys with security hardening built in.', cmd: '# DigitalOcean 1-Click or manual:\npnpm openclaw onboard\n# Important: enable gateway auth immediately' },
+    'vps-team-cloud': { title: 'Cloud VPS \u2014 Team, Cloud Models', body: 'For shared agents: use separate agent instances per trust boundary. Don\'t give one shared agent access to everyone\'s credentials. Use a dedicated VPS with Docker isolation and enforce gateway auth.', cmd: '# Docker recommended for team deployments\ndocker pull openclaw/openclaw\n# Configure per-agent isolation' },
+  };
+
+  function getKey() { return hw + '-' + use + '-' + priv; }
+  function findBest() {
+    var key = getKey();
+    if (configs[key]) return configs[key];
+    var partials = [hw+'-'+use, hw+'-'+priv, hw];
+    for (var i = 0; i < partials.length; i++) {
+      for (var k in configs) { if (k.indexOf(partials[i]) === 0) return configs[k]; }
+    }
+    return { title: 'Custom Setup', body: 'Start with the official install guide and choose your model provider based on your privacy and performance needs.', cmd: 'git clone https://github.com/openclaw/openclaw\ncd openclaw && pnpm install && pnpm build\npnpm openclaw onboard' };
+  }
+
+  function updateResult() {
+    if (!hw || !use || !priv) return;
+    var cfg = findBest();
+    var el = document.getElementById('setup-result');
+    el.innerHTML = '<div class="rec-tag">Recommended Setup</div>' +
+      '<h3>' + cfg.title + '</h3>' +
+      '<p>' + cfg.body + '</p>' +
+      '<code>' + cfg.cmd + '</code>';
+    el.classList.add('visible');
+  }
+
+  function bindGroup(groupId, varName) {
+    document.querySelectorAll('#' + groupId + ' .setup-opt').forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        document.querySelectorAll('#' + groupId + ' .setup-opt').forEach(function(o) { o.classList.remove('selected'); });
+        opt.classList.add('selected');
+        if (varName === 'hw') hw = opt.getAttribute('data-hw');
+        if (varName === 'use') use = opt.getAttribute('data-use');
+        if (varName === 'priv') priv = opt.getAttribute('data-priv');
+        updateResult();
+      });
+    });
+  }
+
+  bindGroup('hw-options', 'hw');
+  bindGroup('use-options', 'use');
+  bindGroup('privacy-options', 'priv');
+})();
+
+// ── SECURITY CHECKLIST ──
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+  var total = document.querySelectorAll('.check-item').length;
+  var checked = document.querySelectorAll('.check-item.checked').length;
+  var pct = Math.round((checked / total) * 100);
+  document.getElementById('check-fill').style.width = pct + '%';
+  document.getElementById('check-pct').textContent = pct + '%';
+}
+</script>
+
+<script>
+(function() {
+  const REPO = 'openclaw/openclaw';
+  const API = 'https://api.github.com';
+
+  function formatNum(n) {
+    if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return String(n);
+  }
+
+  function timeAgo(dateStr) {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return mins + 'm ago';
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return hrs + 'h ago';
+    const days = Math.floor(hrs / 24);
+    if (days < 30) return days + 'd ago';
+    return Math.floor(days / 30) + 'mo ago';
+  }
+
+  function setStat(id, value) {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = value; el.classList.remove('shimmer'); }
+  }
+
+  // Fetch repo stats
+  fetch(API + '/repos/' + REPO)
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(data => {
+      setStat('stat-stars', formatNum(data.stargazers_count));
+      setStat('stat-forks', formatNum(data.forks_count));
+      setStat('stat-issues', formatNum(data.open_issues_count));
+    })
+    .catch(() => {
+      setStat('stat-stars', '\u2014');
+      setStat('stat-forks', '\u2014');
+      setStat('stat-issues', '\u2014');
+    });
+
+  // Fetch contributors (top 12)
+  fetch(API + '/repos/' + REPO + '/contributors?per_page=12')
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(contribs => {
+      setStat('stat-contribs', contribs.length >= 12 ? '100+' : String(contribs.length));
+      const grid = document.getElementById('contrib-grid');
+      grid.innerHTML = contribs.map(c =>
+        '<a href="https://github.com/' + c.login + '" target="_blank" rel="noopener" class="contrib-card">' +
+          '<img class="contrib-avatar" src="' + c.avatar_url + '&s=80" alt="' + c.login + '" loading="lazy">' +
+          '<div class="contrib-name">' + c.login + '</div>' +
+          '<div class="contrib-count">' + c.contributions + ' commits</div>' +
+        '</a>'
+      ).join('');
+
+      return fetch(API + '/repos/' + REPO + '/contributors?per_page=1');
+    })
+    .then(r => {
+      const link = r.headers.get('Link');
+      if (link) {
+        const match = link.match(/page=(\d+)>;\s*rel="last"/);
+        if (match) setStat('stat-contribs', formatNum(parseInt(match[1])));
+      }
+    })
+    .catch(() => {
+      setStat('stat-contribs', '\u2014');
+      document.getElementById('contrib-grid').innerHTML =
+        '<p style="color:rgba(255,255,255,0.35);font-size:0.84rem;grid-column:1/-1;">Could not load contributors. <a href="https://github.com/' + REPO + '/graphs/contributors" target="_blank" rel="noopener" style="color:var(--red);">View on GitHub \u2192</a></p>';
+    });
+
+  // Fetch recent commits (last 8)
+  fetch(API + '/repos/' + REPO + '/commits?per_page=8')
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(commits => {
+      const list = document.getElementById('commits-list');
+      list.innerHTML = commits.map(c => {
+        const author = c.author || {};
+        const info = c.commit || {};
+        const login = author.login || (info.author && info.author.name) || 'unknown';
+        const avatar = author.avatar_url ? author.avatar_url + '&s=48' : '';
+        const msg = (info.message || '').split('\n')[0];
+        const sha = c.sha ? c.sha.substring(0, 7) : '';
+        const date = info.author ? info.author.date : '';
+        return '<a href="' + (c.html_url || '#') + '" target="_blank" rel="noopener" class="commit-row">' +
+          (avatar ? '<img class="commit-avatar" src="' + avatar + '" alt="' + login + '" loading="lazy">' : '<div class="commit-avatar"></div>') +
+          '<div class="commit-body">' +
+            '<div class="commit-msg">' + msg.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>' +
+            '<div class="commit-meta">' + login + (date ? ' \u00b7 ' + timeAgo(date) : '') + '</div>' +
+          '</div>' +
+          '<div class="commit-sha">' + sha + '</div>' +
+        '</a>';
+      }).join('');
+    })
+    .catch(() => {
+      document.getElementById('commits-list').innerHTML =
+        '<p style="color:rgba(255,255,255,0.35);font-size:0.84rem;">Could not load recent activity. <a href="https://github.com/' + REPO + '/commits" target="_blank" rel="noopener" style="color:var(--red);">View on GitHub \u2192</a></p>';
+    });
+})();
+</script>
+
+</body>
+</html>

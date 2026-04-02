@@ -1,0 +1,23 @@
+[Unit]
+Description=KnowTheClaw Demo Broker API
+After=network.target
+
+[Service]
+Type=simple
+User=openclaw
+WorkingDirectory=/home/openclaw/knowtheclaw/demo-api
+ExecStart=/usr/bin/node src/index.js
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+EnvironmentFile=/home/openclaw/knowtheclaw/demo-api/.env
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/openclaw/knowtheclaw/demo-api
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

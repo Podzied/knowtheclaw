@@ -1,0 +1,20 @@
+{
+  "name": "knowtheclaw-demo-api",
+  "version": "1.0.0",
+  "description": "Broker API between KnowTheClaw.com and OpenClaw Gateway",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^7.1.0",
+    "openai": "^6.33.0",
+    "uuid": "^9.0.1",
+    "ws": "^8.16.0"
+  }
+}
